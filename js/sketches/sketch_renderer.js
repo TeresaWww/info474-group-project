@@ -32,7 +32,7 @@
             }
 
             if (ai === 7) {
-                window.VizBar.draw(p, manager, ai, progress);
+                window.VizLine.draw(p, manager, ai, progress);
                 return;
             }
         }
