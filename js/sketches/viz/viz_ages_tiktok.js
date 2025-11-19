@@ -141,6 +141,7 @@
             p.fill(255);
             p.textAlign(p.LEFT, p.CENTER);
             p.textSize(18);
+            p.textStyle(p.BOLD);
   
             let labelX;
             if (barW > 70) {
