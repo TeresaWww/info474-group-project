@@ -1,6 +1,5 @@
-// viz_line.js
 (function () {
-    window.VizLine = {
+    window.VizSix = {
         draw: function (p, manager, ai, progress) {
             p.push();
 
