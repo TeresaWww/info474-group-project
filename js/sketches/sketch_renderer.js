@@ -37,6 +37,11 @@
                 return;
             }
 
+            if (ai === 1) {
+                window.VizTikTokAge.draw(p, manager, ai, progress);
+                return;
+            }
+
             if (ai === 2) {
                 window.VizSix.draw(p, manager, ai, progress);
                 return;

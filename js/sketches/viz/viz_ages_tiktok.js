@@ -23,13 +23,11 @@
   
         // ----- background + title -----
         p.noStroke();
-        p.fill(248, 248, 251);
-        p.rect(20, 20, p.width - 40, p.height - 40, 12);
   
         p.fill(0);
         p.textAlign(p.CENTER, p.TOP);
         p.textSize(28);
-        p.text("US TikTok Users by Age", p.width / 2, 35);
+        p.text("TikTok Users by Age in United States", p.width / 2, 35);
   
         // ----- layout -----
         const margin = {
@@ -84,7 +82,7 @@
   
         // ----- y-axis with "Age Group" words -----
         p.push();
-        p.translate(-60, h / 2);
+        p.translate(-75, h / 2);
         p.rotate(-p.HALF_PI);
         p.textAlign(p.CENTER, p.CENTER);
         p.textSize(14);
@@ -101,7 +99,7 @@
   
           // bar
           p.noStroke();
-          p.fill(79, 76, 139);
+          p.fill(145,30,30);
           p.rect(barX, barY, barW, barHeight, 8);
   
           // age labels
@@ -116,7 +114,7 @@
         p.textAlign(p.CENTER, p.TOP);
         p.textSize(14);
         p.text(
-          "Proportion of US TikTok Users 2025",
+          "Proportion of Users",
           w / 2,
           h + 40
         );
