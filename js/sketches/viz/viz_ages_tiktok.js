@@ -23,7 +23,6 @@
   
         // ----- background + title -----
         p.noStroke();
-  
         p.fill(0);
         p.textAlign(p.CENTER, p.TOP);
         p.textSize(28);
@@ -89,7 +88,33 @@
         p.fill(60);
         p.text("Age Group", 0, 0);
         p.pop();
-  
+        
+        // interactivity: show the exact proportions on hover
+        const baseColor = p.color(145, 30, 30); 
+        const dimColor  = p.color(210, 180, 180);
+
+        // mouse position relative to drawing area
+        const localMouseX = p.mouseX - margin.left;
+        const localMouseY = p.mouseY - margin.top;
+
+        let hoveredIndex = -1;
+
+        // check if mouse is over any bar
+        if (localMouseX >= 0 && localMouseX <= w &&
+            localMouseY >= 0 && localMouseY <= h) {
+          for (let i = 0; i < n; i++) {
+            const barY = i * (barHeight + barGap);
+            const barX = 0;
+            const barW = xScale(data[i].value);
+
+            if (localMouseX >= barX && localMouseX <= barX + barW &&
+            localMouseY >= barY && localMouseY <= barY + barHeight) {
+              hoveredIndex = i;
+              break;
+            }
+          }
+        }
+
         // ----- bar graph + labels -----
         for (let i = 0; i < n; i++) {
           const d = data[i];
@@ -99,7 +124,11 @@
   
           // bar
           p.noStroke();
-          p.fill(145,30,30);
+          if (hoveredIndex === -1 || hoveredIndex === i) {
+            p.fill(baseColor);
+          } else {
+            p.fill(dimColor);
+          }
           p.rect(barX, barY, barW, barHeight, 8);
   
           // age labels
@@ -107,17 +136,29 @@
           p.textAlign(p.RIGHT, p.CENTER);
           p.textSize(14);
           p.text(d.age, -10, barY + barHeight / 2);
+
+          if (hoveredIndex === i) {
+            p.fill(255);
+            p.textAlign(p.LEFT, p.CENTER);
+            p.textSize(18);
+  
+            let labelX;
+            if (barW > 70) {
+              labelX = barX + barW - 5;
+              p.textAlign(p.RIGHT, p.CENTER);
+            } else {
+              labelX = barX + barW + 8;
+              p.textAlign(p.LEFT, p.CENTER);
+            }
+            p.text(d.value.toFixed(1) + "%", labelX, barY + barHeight / 2);
+          }
         }
   
         // ----- bottom -----
         p.fill(40);
         p.textAlign(p.CENTER, p.TOP);
         p.textSize(14);
-        p.text(
-          "Proportion of Users",
-          w / 2,
-          h + 40
-        );
+        p.text("Proportion of Users", w / 2, h + 40);
   
         p.pop();
       },
