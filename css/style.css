@@ -105,9 +105,10 @@ img.tiktok-img {
 #vis {
   display: inline-block;
   position: fixed;
-  top: 50px;
+  top: 160px;
   z-index: 100;
-  margin-left: 0;
+  margin-left: 80px;
+
   /* height: 600px; */
   /* width: 600px; */
   /* background-color: #ddd; */
