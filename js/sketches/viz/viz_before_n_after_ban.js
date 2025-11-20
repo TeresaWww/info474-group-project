@@ -91,7 +91,7 @@
 
         // Jan 12 corresponds to Feb 12
         const febDay = 12 + i;   // 12, 13, ..., 26
-        const label = "Feb " + febDay;
+        const label = "Jan " + febDay;
 
         p.text(label, x, h + 8);
         }
