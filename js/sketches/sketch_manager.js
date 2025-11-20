@@ -32,6 +32,11 @@ function startP5() {
             };
 
             p.draw = function () {
+                var ai = self.state.activeIndex || 0;
+                if (ai === 0) {
+                    p.clear(); 
+                    return;
+                }
                 p.background(255);
                 self.draw(p);
             };

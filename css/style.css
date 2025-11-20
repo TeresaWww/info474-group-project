@@ -37,11 +37,20 @@ img.tiktok-img {
 .tiktok-title {
   margin: 0;
   font-family: "TiemposTextWeb-Regular", "Georgia", serif;
-  font-size: 40px;  
+  font-size: 45px;  
   font-weight: 700;
   color: white;
   line-height: 1.15;
   text-shadow: 0 3px 10px rgba(0, 0, 0, 0.6); /* increase readability */
+}
+
+.tiktok-subtitle {
+  margin: 8px 0 0 0;
+  font-family: "TiemposTextWeb-Regular", "Georgia", serif;
+  font-size: 18px;
+  font-weight: 400;
+  color: rgba(255, 255, 255, 0.9);
+  text-shadow: 0 2px 6px rgba(0, 0, 0, 0.5);
 }
 
 .container {
@@ -60,6 +69,13 @@ img.tiktok-img {
   top: 0px;
   z-index: 90;
   padding-bottom: 200px;
+}
+
+.intro-step {
+  height: 0;
+  margin: 0;
+  padding: 0;
+  overflow: hidden;
 }
 
 .step {
@@ -86,7 +102,7 @@ img.tiktok-img {
 #vis {
   display: inline-block;
   position: fixed;
-  top: 60px;
+  top: 50px;
   z-index: 100;
   margin-left: 0;
   /* height: 600px; */
