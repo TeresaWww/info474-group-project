@@ -10,24 +10,29 @@ p5.prototype.preload = function () {
     );
 };
 
+// global state for Twitter popup
+window.twitterPopup = {
+    visible: false,
+    x: 0,
+    y: 0,
+    text: ""
+};
 
 (function () {
     window.Vizplatform_compare = {
         draw: function (p, manager, ai, progress) {
             p.push();
 
-            // changing data from long to wide format
-            var dataMap = {}; // year -> { platform: value }
-
-           /* if (!window.datasetSix || window.datasetSix.getRowCount() === 0) {
-                // If the file hasn't loaded yet or is missing, draw a friendly message
+            // change csv from long format to wide format 
+            var dataMap = {};
+            if (!window.datasetSix || window.datasetSix.getRowCount() === 0) {
                 p.fill(0);
                 p.textAlign(p.CENTER, p.CENTER);
                 p.textSize(14);
                 p.text("Dataset not loaded — check CSV path or reload the page.", p.width / 2, p.height / 2);
                 p.pop();
                 return;
-            }*/
+            }
 
             window.datasetSix.rows.forEach(row => {
                 var year = parseInt(row.get('Year'), 10);
@@ -41,19 +46,16 @@ p5.prototype.preload = function () {
             });
 
             var years = Object.keys(dataMap).map(y => parseInt(y)).sort((a, b) => a - b);
-            var chartData = years.map(y => {
-                return {
-                    year: y,
-                    Facebook: dataMap[y]['Facebook'] || null,
-                    Instagram: dataMap[y]['Instagram'] || null,
-                    Pinterest: dataMap[y]['Pinterest'] || null,
-                    SnapChat: dataMap[y]['SnapChat'] || null,
-                    Twitter: dataMap[y]['Twitter'] || null,
-                    TikTok: dataMap[y]['TikTok'] || null
-                };
-            });
+            var chartData = years.map(y => ({
+                year: y,
+                Facebook: dataMap[y]['Facebook'] || null,
+                Instagram: dataMap[y]['Instagram'] || null,
+                Pinterest: dataMap[y]['Pinterest'] || null,
+                SnapChat: dataMap[y]['SnapChat'] || null,
+                Twitter: dataMap[y]['Twitter'] || null,
+                TikTok: dataMap[y]['TikTok'] || null
+            }));
 
-            
             var platforms = [
                 { key: "Facebook", color: "#4C78A8" },
                 { key: "Instagram", color: "#F58518" },
@@ -63,24 +65,21 @@ p5.prototype.preload = function () {
                 { key: "TikTok", color: "#54A24B" }
             ];
 
-           
             var left = manager.offsetX || 50;
             var top = manager.offsetY || 20;
             var width = (manager.width || 600) - 80;
             var height = (manager.height || 350) - 40;
 
-            
             var minVal = 0;
             var maxVal = 180;
             var stepVal = 20;
             var steps = (maxVal - minVal) / stepVal;
 
-           
+            // axes and grid
             p.stroke(0);
-            p.line(left, top, left, top + height);           // y-axis
-            p.line(left, top + height, left + width, top + height); // x-axis
+            p.line(left, top, left, top + height);
+            p.line(left, top + height, left + width, top + height);
 
-            
             p.stroke(200);
             p.fill(0);
             p.textAlign(p.RIGHT, p.CENTER);
@@ -89,40 +88,42 @@ p5.prototype.preload = function () {
             for (var i = 0; i <= steps; i++) {
                 var yVal = minVal + i * stepVal;
                 var y = top + height - ((yVal - minVal) / (maxVal - minVal)) * height;
-
-                
                 p.stroke(220);
                 p.line(left, y, left + width, y);
-
-                
                 p.fill(0);
                 p.noStroke();
                 p.text(yVal, left - 10, y);
             }
 
-            // adding hover feature when over the chart - to highlight TikTok specifically 
             var mouseOverChart = (
                 p.mouseX >= left && p.mouseX <= left + width &&
                 p.mouseY >= top && p.mouseY <= top + height
             );
 
-           
-            platforms.forEach(function (pf) {
-                
-                if (mouseOverChart) {
-                    if (pf.key === "TikTok") {
-                        p.stroke(pf.color);
-                        p.strokeWeight(4); 
-                    } else {
-                        p.stroke("#ccc"); 
-                        p.strokeWeight(2);
-                    }
-                } else {
-                    p.stroke(pf.color);
-                    p.strokeWeight(pf.key === "TikTok" ? 3 : 2);
+            
+            var lastTwitterIndex = -1;
+            for (var i = chartData.length - 1; i >= 0; i--) {
+                if (chartData[i]['Twitter'] !== null && chartData[i]['Twitter'] !== undefined) {
+                    lastTwitterIndex = i;
+                    break;
                 }
+            }
+            var lastTwitterPoint = null;
+            if (lastTwitterIndex >= 0) {
+                lastTwitterPoint = {
+                    x: left + (lastTwitterIndex / (chartData.length - 1)) * width,
+                    y: top + height - ((chartData[lastTwitterIndex]['Twitter'] - minVal) / (maxVal - minVal)) * height,
+                    text: "No data for Twitter in 2025 since Twitter became X"
+                };
+                window.lastTwitterPoint = lastTwitterPoint;
+            }
 
-                
+            
+            platforms.forEach(function (pf) {
+                p.stroke(mouseOverChart && pf.key !== "TikTok" ? "#ccc" : pf.color);
+                p.strokeWeight(p.key === "TikTok" ? 4 : 2);
+
+                // draw lines for each platform
                 p.noFill();
                 p.beginShape();
                 for (var j = 0; j < chartData.length; j++) {
@@ -136,7 +137,7 @@ p5.prototype.preload = function () {
                 }
                 p.endShape();
 
-                
+                // draw dots for each line
                 for (var j2 = 0; j2 < chartData.length; j2++) {
                     var d2 = chartData[j2];
                     var val2 = d2[pf.key];
@@ -144,17 +145,18 @@ p5.prototype.preload = function () {
                         var x2 = left + (j2 / (chartData.length - 1)) * width;
                         var y2 = top + height - ((val2 - minVal) / (maxVal - minVal)) * height;
 
-                        
-                        if (mouseOverChart && pf.key !== "TikTok") {
-                            p.fill("#ccc");
-                        } else {
-                            p.fill(pf.color);
-                        }
-
+                        p.fill(mouseOverChart && pf.key !== "TikTok" ? "#ccc" : pf.color);
                         p.noStroke();
                         p.circle(x2, y2, 8);
 
-                        
+                        // last Twitter point highlighted - included circle around it 
+                        if (pf.key === "Twitter" && j2 === lastTwitterIndex) {
+                            p.noFill();
+                            p.stroke('red');
+                            p.strokeWeight(2);
+                            p.circle(x2, y2, 16);
+                        }
+
                         if (pf.key === platforms[0].key) {
                             p.fill(0);
                             p.textAlign(p.CENTER, p.TOP);
@@ -188,20 +190,56 @@ p5.prototype.preload = function () {
                 p.text(pf.key, lx + 15, ly + i * 25);
             });
 
+    
+            if (window.twitterPopup.visible) {
+                var popupWidth = 220;
+                var popupHeight = 50;
+                var px = window.twitterPopup.x - popupWidth / 2; 
+                var py = window.twitterPopup.y + 15; 
+
+                p.fill(255);
+                p.stroke(0);
+                p.rect(px, py, popupWidth, popupHeight, 5);
+
+                
+                p.fill(200, 50, 50);
+                p.noStroke();
+                p.rect(px + popupWidth - 20, py + 5, 15, 15);
+                p.fill(0);
+                p.textSize(12);
+                p.textAlign(p.CENTER, p.CENTER);
+                p.text("X", px + popupWidth - 12.5, py + 12.5);
+
+            
+                p.fill(0);
+                p.noStroke();
+                p.textAlign(p.LEFT, p.TOP);
+                p.text(window.twitterPopup.text, px + 10, py + 10, popupWidth - 25, popupHeight - 20);
+            }
+
+
             p.pop();
+
+            
+            p.mousePressed = function () {
+                if (!window.lastTwitterPoint) return;
+
+                var pt = window.lastTwitterPoint;
+                var d = p.dist(p.mouseX, p.mouseY, pt.x, pt.y);
+
+                // when clicked on red Twitter circle -> will show popup
+                if (d <= 8) {
+                    window.twitterPopup.visible = true;
+                    window.twitterPopup.x = pt.x;
+                    window.twitterPopup.y = pt.y;
+                    window.twitterPopup.text = pt.text;
+                    return;
+                }
+
+                // clicked anywhere else -> hide popup
+                window.twitterPopup.visible = false;
+            };
         }
     };
 })();
-
-
-
-
-
-
-
-
-
-
-
-
 
