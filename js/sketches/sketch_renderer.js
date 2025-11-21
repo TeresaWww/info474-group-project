@@ -43,7 +43,7 @@
             }
 
             if (ai === 2) {
-                window.VizSix.draw(p, manager, ai, progress);
+                window.Vizplatform_compare.draw(p, manager, ai, progress);
                 return;
             }
 
