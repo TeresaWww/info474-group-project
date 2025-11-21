@@ -18,12 +18,19 @@ window.twitterPopup = {
     text: ""
 };
 
+// global state for animation
+window.lineAnimation = {
+    progress: 0,
+    speed: 0.01,
+    finished: false
+};
+
 (function () {
     window.Vizplatform_compare = {
         draw: function (p, manager, ai, progress) {
             p.push();
 
-            // change csv from long format to wide format 
+            // change dataset from long format to wide format 
             var dataMap = {};
             if (!window.datasetSix || window.datasetSix.getRowCount() === 0) {
                 p.fill(0);
@@ -37,7 +44,7 @@ window.twitterPopup = {
             window.datasetSix.rows.forEach(row => {
                 var year = parseInt(row.get('Year'), 10);
                 var platform = row.get('Platform');
-                var valueStr = row.get('Number of Users (in millions)');
+                var valueStr = row.get('Number of Users (in millions)') || "";
                 var value = parseFloat(valueStr);
                 if (isNaN(value)) value = null;
 
@@ -118,15 +125,24 @@ window.twitterPopup = {
                 window.lastTwitterPoint = lastTwitterPoint;
             }
 
-            
+            // animation for lines
+            if (!window.lineAnimation.finished) {
+                window.lineAnimation.progress += window.lineAnimation.speed;
+                if (window.lineAnimation.progress >= 1) {
+                    window.lineAnimation.progress = 1;
+                    window.lineAnimation.finished = true;
+                }
+            }
+
             platforms.forEach(function (pf) {
                 p.stroke(mouseOverChart && pf.key !== "TikTok" ? "#ccc" : pf.color);
                 p.strokeWeight(p.key === "TikTok" ? 4 : 2);
-
-                // draw lines for each platform
                 p.noFill();
+
                 p.beginShape();
-                for (var j = 0; j < chartData.length; j++) {
+                var maxDrawIndex = Math.floor((chartData.length - 1) * window.lineAnimation.progress);
+                var t = ((chartData.length - 1) * window.lineAnimation.progress) - maxDrawIndex; // fractional progress
+                for (var j = 0; j <= maxDrawIndex; j++) {
                     var d = chartData[j];
                     var val = d[pf.key];
                     if (val !== null && val !== undefined) {
@@ -135,27 +151,34 @@ window.twitterPopup = {
                         p.vertex(x, y);
                     }
                 }
+                
+                if (maxDrawIndex < chartData.length - 1) {
+                    var d1 = chartData[maxDrawIndex];
+                    var d2 = chartData[maxDrawIndex + 1];
+                    var v1 = d1[pf.key];
+                    var v2 = d2[pf.key];
+                    if (v1 !== null && v1 !== undefined && v2 !== null && v2 !== undefined) {
+                        var x1 = left + (maxDrawIndex / (chartData.length - 1)) * width;
+                        var y1 = top + height - ((v1 - minVal) / (maxVal - minVal)) * height;
+                        var x2 = left + ((maxDrawIndex + 1) / (chartData.length - 1)) * width;
+                        var y2 = top + height - ((v2 - minVal) / (maxVal - minVal)) * height;
+                        var xi = p.lerp(x1, x2, t);
+                        var yi = p.lerp(y1, y2, t);
+                        p.vertex(xi, yi);
+                    }
+                }
                 p.endShape();
 
-                // draw dots for each line
-                for (var j2 = 0; j2 < chartData.length; j2++) {
+                // draw dots only up to progress
+                for (var j2 = 0; j2 <= maxDrawIndex; j2++) {
                     var d2 = chartData[j2];
                     var val2 = d2[pf.key];
                     if (val2 !== null && val2 !== undefined) {
                         var x2 = left + (j2 / (chartData.length - 1)) * width;
                         var y2 = top + height - ((val2 - minVal) / (maxVal - minVal)) * height;
-
                         p.fill(mouseOverChart && pf.key !== "TikTok" ? "#ccc" : pf.color);
                         p.noStroke();
                         p.circle(x2, y2, 8);
-
-                        // last Twitter point highlighted - included circle around it 
-                        if (pf.key === "Twitter" && j2 === lastTwitterIndex) {
-                            p.noFill();
-                            p.stroke('red');
-                            p.strokeWeight(2);
-                            p.circle(x2, y2, 16);
-                        }
 
                         if (pf.key === platforms[0].key) {
                             p.fill(0);
@@ -166,12 +189,24 @@ window.twitterPopup = {
                 }
             });
 
+            
+            if (window.lineAnimation.finished && lastTwitterPoint) {
+                p.push();
+                p.noFill();
+                p.stroke('red');
+                p.strokeWeight(2);
+                p.circle(lastTwitterPoint.x, lastTwitterPoint.y, 16);
+                p.pop();
+            }
+
             // axis titles
+            p.push();
             p.fill(0);
             p.textSize(14);
             p.textAlign(p.CENTER, p.CENTER);
             p.text("Year", left + width / 2, top + height + 40);
             p.push();
+            p.fill(0);
             p.translate(left - 50, top + height / 2);
             p.rotate(-Math.PI / 2);
             p.text("Number of Users (millions)", 0, 0);
@@ -190,18 +225,17 @@ window.twitterPopup = {
                 p.text(pf.key, lx + 15, ly + i * 25);
             });
 
-    
+            
             if (window.twitterPopup.visible) {
                 var popupWidth = 220;
                 var popupHeight = 50;
-                var px = window.twitterPopup.x - popupWidth / 2; 
-                var py = window.twitterPopup.y + 15; 
+                var px = window.twitterPopup.x - popupWidth / 2;
+                var py = window.twitterPopup.y + 15;
 
                 p.fill(255);
                 p.stroke(0);
                 p.rect(px, py, popupWidth, popupHeight, 5);
 
-                
                 p.fill(200, 50, 50);
                 p.noStroke();
                 p.rect(px + popupWidth - 20, py + 5, 15, 15);
@@ -210,25 +244,22 @@ window.twitterPopup = {
                 p.textAlign(p.CENTER, p.CENTER);
                 p.text("X", px + popupWidth - 12.5, py + 12.5);
 
-            
                 p.fill(0);
                 p.noStroke();
                 p.textAlign(p.LEFT, p.TOP);
                 p.text(window.twitterPopup.text, px + 10, py + 10, popupWidth - 25, popupHeight - 20);
             }
 
-
             p.pop();
 
-            
+           
             p.mousePressed = function () {
                 if (!window.lastTwitterPoint) return;
 
                 var pt = window.lastTwitterPoint;
                 var d = p.dist(p.mouseX, p.mouseY, pt.x, pt.y);
 
-                // when clicked on red Twitter circle -> will show popup
-                if (d <= 8) {
+                if (window.lineAnimation.finished && d <= 8) {
                     window.twitterPopup.visible = true;
                     window.twitterPopup.x = pt.x;
                     window.twitterPopup.y = pt.y;
@@ -236,7 +267,7 @@ window.twitterPopup = {
                     return;
                 }
 
-                // clicked anywhere else -> hide popup
+            
                 window.twitterPopup.visible = false;
             };
         }
