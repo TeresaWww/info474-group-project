@@ -1,3 +1,11 @@
+body {
+  font-family: Arial, Helvetica, "san-serif";
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+  color: #FFFFFF;
+}
+
 #sketch-holder {
   margin-top: 200px;   /* Adjust height */
 }
@@ -35,25 +43,65 @@ img.tiktok-img {
   text-align: center;
 }
 
+.tiktok-hero.sidebar {
+  position: relative;
+  display: flex;
+  gap: 60px;
+  padding: 120px 40px;
+  align-items: center;
+}
+
+/* TikTok UI vertical dots */
+.side-ui {
+  display: flex;
+  flex-direction: column;
+  gap: 18px;
+}
+
+.ui-dot {
+  width: 18px;
+  height: 18px;
+  border-radius: 50%;
+  box-shadow: 0 0 15px currentColor;
+}
+.ui-dot.red { background: #EE1D52; color:#EE1D52; }
+.ui-dot.aqua { background: #69C9D0; color:#69C9D0; }
+.ui-dot.white { background: white; color:white; }
+
+.title-block h1 {
+  font-size: 54px;
+  font-weight: 900;
+  color: white;
+  line-height: 1.1;
+
+}
+.title-block h1 #US {
+  /* background: linear-gradient(90deg,#EE1D52,#69C9D0); */
+  background: #EE1D52;
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+.title-block h1 #TikTok {
+  /* background: linear-gradient(90deg,#EE1D52,#69C9D0); */
+  background: #69C9D0;
+  -webkit-background-clip:text;
+  color:transparent;
+}
+
+
 .hero-text {
   width: 890px; 
   margin: 24px auto 40px;
-  text-align: center;
+  /* text-align: center; */
   font-family: "TiemposTextWeb-Regular", "Georgia", serif;
 }
 
-.hero-title {
-  font-size: 50px;
-  font-weight: 700;
-  line-height: 1.2;
-  margin: 80px 0 8px 0;
-}
-
 .hero-subtitle {
-  font-size: 25px;
+  font-size: 20px;
   font-weight: 400;
   margin-top: 40px;
-  color: #444;
+  color: #4b494a;
 }
 
 .container {
@@ -86,7 +134,8 @@ img.tiktok-img {
   font-family: "TiemposTextWeb-Regular","Georgia";
   font-size: 17px;
   line-height: 23px;
-  color: #28282b;
+  color: #cccccc;
+  transition: color 0.3s ease, text-shadow 0.3s ease;
 }
 
 #sections .title {
@@ -94,7 +143,7 @@ img.tiktok-img {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 2px;
-  color: #000000;
+  color: #FFFFFF;
   line-height: 1.2em;
 }
 
