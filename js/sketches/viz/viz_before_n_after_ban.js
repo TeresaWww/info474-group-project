@@ -31,6 +31,7 @@
         }
   
         p.push();
+        p.background(0);
   
         // --- layout ---
         // 🔹 Make graph shorter by increasing top/bottom margins
@@ -56,7 +57,7 @@
         const yScale = v => p.map(v, minY, maxY, h, 0);
   
         // --- axes ---
-        p.stroke(0);
+        p.stroke(255);
         p.strokeWeight(1);
         p.line(0, 0, 0, h);      // y-axis
         p.line(0, h, w, h);      // x-axis
@@ -70,9 +71,10 @@
           const y = yScale(t);
           p.stroke(220);
           p.line(0, y, w, y);
-          p.stroke(0);
+          p.stroke(255);
           p.line(-5, y, 0, y);
           p.noStroke();
+          p.fill(255);
           p.text(t.toFixed(1), -8, y);
         }
   
@@ -85,7 +87,7 @@
         const x = i * xStep;
 
         // tick
-        p.stroke(0);
+        p.stroke(255);
         p.line(x, h, x, h + 5);
         p.noStroke();
 
@@ -99,7 +101,7 @@
   
         // main line
         p.noFill();
-        p.stroke(0);
+        p.stroke(255);
         p.strokeWeight(3);
         p.beginShape();
         for (let i = 0; i < data.length; i++) {
@@ -118,7 +120,7 @@
 
       if (outageIdx !== -1) {
         const x = outageIdx * xStep;
-        p.stroke(150, 0, 0);
+        p.stroke(238, 29, 82);
         p.strokeWeight(2);
         p.drawingContext.setLineDash([5, 5]);
         p.line(x, 0, x, h);
@@ -126,14 +128,14 @@
 
         // 🔹 label slightly to the LEFT of the line
         p.noStroke();
-        p.fill(150, 0, 0);
+        p.fill(238, 29, 82);
         p.textAlign(p.RIGHT, p.BOTTOM);
-        p.text("TikTok outage", x - 6, -5);
+        p.text("TikTok outage", x + 16, -10);
       }
 
       if (restoreIdx !== -1) {
         const x = restoreIdx * xStep;
-        p.stroke(0, 80, 160);
+        p.stroke(105, 201, 208);
         p.strokeWeight(2);
         p.drawingContext.setLineDash([5, 5]);
         p.line(x, 0, x, h);
@@ -141,14 +143,14 @@
 
         // 🔹 label slightly to the RIGHT of the line
         p.noStroke();
-        p.fill(0, 80, 160);
+        p.fill(105, 201, 208);
         p.textAlign(p.LEFT, p.BOTTOM);
-        p.text("Service restoration", x + 6, -5);
+        p.text("Service restoration", x - 16, -10);
       }
 
   
         // axis titles
-        p.fill(0);
+        p.fill(255);
         p.noStroke();
         p.textAlign(p.CENTER, p.BOTTOM);
         p.text("Date (Jan 12–26, 2025)", w / 2, h + 40);
