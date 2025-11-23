@@ -29,6 +29,7 @@ window.lineAnimation = {
     window.Vizplatform_compare = {
         draw: function (p, manager, ai, progress) {
             p.push();
+            p.background(0);
 
             // change dataset from long format to wide format 
             var dataMap = {};
@@ -64,12 +65,12 @@ window.lineAnimation = {
             }));
 
             var platforms = [
-                { key: "Facebook", color: "#4C78A8" },
-                { key: "Instagram", color: "#F58518" },
-                { key: "Pinterest", color: "#E45756" },
-                { key: "SnapChat", color: "#72B7B2" },
-                { key: "Twitter", color: "#F2CF5B" },
-                { key: "TikTok", color: "#54A24B" }
+                { key: "Facebook", color: "#4DA6FF" },
+                { key: "Instagram", color: "#FF5E99" },
+                { key: "Pinterest", color: "#FF3355" },
+                { key: "SnapChat", color: "#FFF500" },
+                { key: "Twitter", color: "#B388FF" },
+                { key: "TikTok", color: "#69F6FF" }
             ];
 
             var left = manager.offsetX || 50;
@@ -83,12 +84,12 @@ window.lineAnimation = {
             var steps = (maxVal - minVal) / stepVal;
 
             // axes and grid
-            p.stroke(0);
+            p.stroke(200);
             p.line(left, top, left, top + height);
             p.line(left, top + height, left + width, top + height);
 
             p.stroke(200);
-            p.fill(0);
+            p.fill(255);
             p.textAlign(p.RIGHT, p.CENTER);
             p.textSize(12);
 
@@ -97,7 +98,7 @@ window.lineAnimation = {
                 var y = top + height - ((yVal - minVal) / (maxVal - minVal)) * height;
                 p.stroke(220);
                 p.line(left, y, left + width, y);
-                p.fill(0);
+                p.fill(255);
                 p.noStroke();
                 p.text(yVal, left - 10, y);
             }
@@ -136,7 +137,7 @@ window.lineAnimation = {
 
             platforms.forEach(function (pf) {
                 p.stroke(mouseOverChart && pf.key !== "TikTok" ? "#ccc" : pf.color);
-                p.strokeWeight(p.key === "TikTok" ? 4 : 2);
+                p.strokeWeight(p.key === "TikTok" ? 6 : 3);
                 p.noFill();
 
                 p.beginShape();
@@ -181,7 +182,7 @@ window.lineAnimation = {
                         p.circle(x2, y2, 8);
 
                         if (pf.key === platforms[0].key) {
-                            p.fill(0);
+                            p.fill(255);
                             p.textAlign(p.CENTER, p.TOP);
                             p.text(d2.year, x2, top + height + 5);
                         }
@@ -194,19 +195,19 @@ window.lineAnimation = {
                 p.push();
                 p.noFill();
                 p.stroke('red');
-                p.strokeWeight(2);
+                p.strokeWeight(3);
                 p.circle(lastTwitterPoint.x, lastTwitterPoint.y, 16);
                 p.pop();
             }
 
             // axis titles
             p.push();
-            p.fill(0);
+            p.fill(255);
             p.textSize(14);
             p.textAlign(p.CENTER, p.CENTER);
             p.text("Year", left + width / 2, top + height + 40);
             p.push();
-            p.fill(0);
+            p.fill(255);
             p.translate(left - 50, top + height / 2);
             p.rotate(-Math.PI / 2);
             p.text("Number of Users (millions)", 0, 0);
@@ -221,7 +222,7 @@ window.lineAnimation = {
                 p.fill(pf.color);
                 p.noStroke();
                 p.circle(lx, ly + i * 25, 10);
-                p.fill(0);
+                p.fill(255);
                 p.text(pf.key, lx + 15, ly + i * 25);
             });
 
@@ -239,12 +240,12 @@ window.lineAnimation = {
                 p.fill(200, 50, 50);
                 p.noStroke();
                 p.rect(px + popupWidth - 20, py + 5, 15, 15);
-                p.fill(0);
+                p.fill(255);
                 p.textSize(12);
                 p.textAlign(p.CENTER, p.CENTER);
                 p.text("X", px + popupWidth - 12.5, py + 12.5);
 
-                p.fill(0);
+                p.fill(255);
                 p.noStroke();
                 p.textAlign(p.LEFT, p.TOP);
                 p.text(window.twitterPopup.text, px + 10, py + 10, popupWidth - 25, popupHeight - 20);
