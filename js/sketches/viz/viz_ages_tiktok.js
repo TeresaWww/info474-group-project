@@ -5,11 +5,11 @@
       draw: function (p, manager, ai, progress) {
         // ----- Data: US TikTok Users by Age (2025) -----
         const data = [
-          { age: "18-24", value: 27.2 },
-          { age: "25-34", value: 39.7 },
-          { age: "35-44", value: 15.9 },
-          { age: "45-54", value: 8.8 },
           { age: "55+",  value: 8.2 },
+          { age: "45-54", value: 8.8 },
+          { age: "35-44", value: 15.9 },
+          { age: "25-34", value: 39.7 },
+          { age: "18-24", value: 27.2 },
         ];
   
         if (!data || data.length === 0) {
@@ -23,7 +23,9 @@
   
         // ----- background + title -----
         p.noStroke();
-        p.fill(0);
+        p.background(0); // black background
+
+        p.fill(255);
         p.textAlign(p.CENTER, p.TOP);
         p.textSize(28);
         p.text("TikTok Users by Age in United States", p.width / 2, 35);
@@ -55,7 +57,7 @@
   
         const axisY = h; // x-axis, y location
   
-        p.stroke(0);
+        p.fill(255); 
         p.strokeWeight(1.2);
         p.line(0, axisY, w, axisY); // x-axis
   
@@ -67,7 +69,7 @@
           const x = xScale(xVal);
   
           // vertical line
-          p.stroke(230);
+          p.fill(255);
           p.line(x, 0, x, axisY);
   
           // tick + label
@@ -75,7 +77,7 @@
           p.line(x, axisY, x, axisY + 4);
   
           p.noStroke();
-          p.fill(60);
+          p.fill(255);
           p.text(xVal + "%", x, axisY + 8);
         }
   
@@ -85,13 +87,13 @@
         p.rotate(-p.HALF_PI);
         p.textAlign(p.CENTER, p.CENTER);
         p.textSize(14);
-        p.fill(60);
+        p.fill(255);
         p.text("Age Group", 0, 0);
         p.pop();
         
         // interactivity: show the exact proportions on hover
-        const baseColor = p.color(145, 30, 30); 
-        const dimColor  = p.color(210, 180, 180);
+        const baseColor = p.color(198, 26, 69);     // darker TikTok red
+        const dimColor  = p.color(198, 26, 69, 90); // dimmed
 
         // mouse position relative to drawing area
         const localMouseX = p.mouseX - margin.left;
@@ -132,7 +134,7 @@
           p.rect(barX, barY, barW, barHeight, 8);
   
           // age labels
-          p.fill(40);
+          p.fill(255);
           p.textAlign(p.RIGHT, p.CENTER);
           p.textSize(14);
           p.text(d.age, -10, barY + barHeight / 2);
@@ -141,7 +143,6 @@
             p.fill(255);
             p.textAlign(p.LEFT, p.CENTER);
             p.textSize(18);
-            p.textStyle(p.BOLD);
   
             let labelX;
             if (barW > 70) {
@@ -156,7 +157,7 @@
         }
   
         // ----- bottom -----
-        p.fill(40);
+        p.fill(255);
         p.textAlign(p.CENTER, p.TOP);
         p.textSize(14);
         p.text("Proportion of Users", w / 2, h + 40);
