@@ -1,7 +1,7 @@
 // viz_before_n_after_ban.js  (VizSeven)
 
 (function () {
-    window.VizSeven = {
+    window.VizBan = {
       draw: function (p, manager, ai, progress) {
   
         // Manual dataset

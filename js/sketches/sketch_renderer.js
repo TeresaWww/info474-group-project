@@ -48,12 +48,12 @@
             }
 
             if (ai === 3) {
-                window.VizSeven.draw(p, manager, ai, progress);
+                window.VizBan.draw(p, manager, ai, progress);
                 return;
             }
 
             if (ai > 3) {
-                window.VizScatter.draw(p, manager, ai, progress);
+                window.VizTimeline.draw(p, manager, ai, progress);
                 return;
             }
         }           
