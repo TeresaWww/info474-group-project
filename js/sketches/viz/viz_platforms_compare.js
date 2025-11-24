@@ -245,7 +245,7 @@ window.lineAnimation = {
                 p.textAlign(p.CENTER, p.CENTER);
                 p.text("X", px + popupWidth - 12.5, py + 12.5);
 
-                p.fill(255);
+                p.fill(0);
                 p.noStroke();
                 p.textAlign(p.LEFT, p.TOP);
                 p.text(window.twitterPopup.text, px + 10, py + 10, popupWidth - 25, popupHeight - 20);
