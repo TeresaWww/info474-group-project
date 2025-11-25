@@ -41,16 +41,36 @@
 
       // --- Create year dropdown once ---
       if (!this.dropdownCreated) {
+        this.yearLabel = p.createDiv('Select Year:');
+        const visContainer = document.getElementById('vis');
+        if( visContainer) this.yearLabel.parent(visContainer);
+        this.yearLabel.position(20, 30);
+        this.yearLabel.style('color', 'white');
+        this.yearLabel.style('font-size', '14px');
+        this.yearLabel.style('font-weight', 'bold');
+
+
+
         this.yearDropdown = p.createSelect();
-        this.yearDropdown.position(20, 20);
-        this.yearDropdown.style('z-index', '10');
         this.yearDropdown.option("2023");
         this.yearDropdown.option("2024");
         this.yearDropdown.option("2025");
         this.yearDropdown.selected(this.year);
+
+        // Attach to canvas container
+        if (visContainer) this.yearDropdown.parent(visContainer);
+
+        // Position and style to appear above canvas
+        this.yearDropdown.position(20, 50);
+        this.yearDropdown.style('z-index', '1000');
+
+        this.yearDropdown.style('color', 'black');
+        this.yearDropdown.style('background-color', 'white');
+
         this.yearDropdown.changed(() => {
           window.VizTikTokMap.year = parseInt(this.yearDropdown.value());
         });
+
         this.dropdownCreated = true;
       }
 
@@ -75,7 +95,7 @@
       });
 
       // --- Scale and center map ---
-      const mapWidth = canvasWidth - 40;
+      const mapWidth = canvasWidth - 150; // leave space for legend
       const mapHeight = canvasHeight - 60;
       const scaleX = mapWidth / (maxX - minX);
       const scaleY = mapHeight / (maxY - minY);
@@ -99,10 +119,11 @@
         let users = NaN;
         if (row) users = parseFloat(row.get(`TikTokUsers_${window.VizTikTokMap.year}`)?.trim());
 
-        let col = p.color(200, 200, 200); // light gray for missing data
+        // Color: blue gradient, light gray if no data
+        let col = p.color(200, 200, 200); 
         if (!isNaN(users) && maxUsers !== minUsers) {
           const amt = (users - minUsers) / (maxUsers - minUsers);
-          col = p.lerpColor(p.color(200, 230, 255), p.color(0, 50, 200), amt); // blue gradient
+          col = p.lerpColor(p.color(200, 230, 255), p.color(0, 50, 200), amt);
         }
 
         p.fill(col);
@@ -122,7 +143,7 @@
         }
       });
 
-      // --- Tooltip with offset to avoid clipping ---
+      // --- Tooltip with offset ---
       if (hoverCountry) {
         const tooltipText = `${hoverCountry.name}: ${hoverCountry.users?.toLocaleString() || "N/A"} users`;
         const padding = 5;
@@ -146,12 +167,12 @@
       }
 
       // --- Color legend ---
-      const legendX = canvasWidth - 110; // moved more right
+      const legendX = canvasWidth - 110;
       const legendY = 50;
       const legendHeight = 150;
       const legendWidth = 20;
       for (let i = 0; i <= 1; i += 0.01) {
-        const col = p.lerpColor(p.color(200, 230, 255), p.color(0, 50, 200), 1 - i); // reverse so top=high
+        const col = p.lerpColor(p.color(200, 230, 255), p.color(0, 50, 200), 1 - i);
         p.stroke(col);
         p.line(legendX, legendY + i * legendHeight, legendX + legendWidth, legendY + i * legendHeight);
       }
@@ -191,6 +212,8 @@
     }
   };
 })();
+
+
 
 
 
