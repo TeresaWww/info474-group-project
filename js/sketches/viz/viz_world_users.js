@@ -196,10 +196,11 @@
       const legendY = 50;
       const legendHeight = 150;
       const legendWidth = 20;
+      p.noStroke();
       for (let i = 0; i <= 1; i += 0.01) {
         const col = p.lerpColor(p.color(200, 230, 255), p.color(0, 50, 200), 1 - i);
-        p.stroke(col);
-        p.line(legendX, legendY + i * legendHeight, legendX + legendWidth, legendY + i * legendHeight);
+        p.fill(col);
+        p.rect(legendX, legendY + i * legendHeight, legendWidth, legendHeight * 0.01);
       }
       p.noStroke();
       p.fill(255);
