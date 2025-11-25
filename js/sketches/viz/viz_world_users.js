@@ -41,31 +41,24 @@
 
       // --- Create year dropdown once ---
       if (!this.dropdownCreated) {
-        this.yearLabel = p.createDiv('Select Year:');
         const visContainer = document.getElementById('vis');
-        if( visContainer) this.yearLabel.parent(visContainer);
+
+        this.yearLabel = p.createDiv('Select Year:');
+        if (visContainer) this.yearLabel.parent(visContainer);
         this.yearLabel.position(20, 30);
         this.yearLabel.style('color', 'white');
         this.yearLabel.style('font-size', '14px');
         this.yearLabel.style('font-weight', 'bold');
 
-
-
         this.yearDropdown = p.createSelect();
-        this.yearDropdown.option("2023");
-        this.yearDropdown.option("2024");
-        this.yearDropdown.option("2025");
+        ["2023", "2024", "2025"].forEach(y => this.yearDropdown.option(y));
         this.yearDropdown.selected(this.year);
-
-        // Attach to canvas container
         if (visContainer) this.yearDropdown.parent(visContainer);
-
-        // Position and style to appear above canvas
         this.yearDropdown.position(20, 50);
         this.yearDropdown.style('z-index', '1000');
-
         this.yearDropdown.style('color', 'black');
         this.yearDropdown.style('background-color', 'white');
+        this.yearDropdown.style('font-size', '14px');
 
         this.yearDropdown.changed(() => {
           window.VizTikTokMap.year = parseInt(this.yearDropdown.value());
@@ -95,7 +88,7 @@
       });
 
       // --- Scale and center map ---
-      const mapWidth = canvasWidth - 150; // leave space for legend
+      const mapWidth = canvasWidth - 150; // space for legend
       const mapHeight = canvasHeight - 60;
       const scaleX = mapWidth / (maxX - minX);
       const scaleY = mapHeight / (maxY - minY);
@@ -114,13 +107,10 @@
       // --- Draw countries ---
       let hoverCountry = null;
       window.country.forEach(c => {
-        let row = null;
-        if (t) row = t.findRow(c.name, 'country') || t.findRow(c.id, 'flagCode');
-        let users = NaN;
-        if (row) users = parseFloat(row.get(`TikTokUsers_${window.VizTikTokMap.year}`)?.trim());
+        let row = t.findRow(c.name, 'country') || t.findRow(c.id, 'flagCode');
+        let users = row ? parseFloat(row.get(`TikTokUsers_${window.VizTikTokMap.year}`)?.trim()) : NaN;
 
-        // Color: blue gradient, light gray if no data
-        let col = p.color(200, 200, 200); 
+        let col = p.color(200, 200, 200); // light gray if no data
         if (!isNaN(users) && maxUsers !== minUsers) {
           const amt = (users - minUsers) / (maxUsers - minUsers);
           col = p.lerpColor(p.color(200, 230, 255), p.color(0, 50, 200), amt);
@@ -143,28 +133,63 @@
         }
       });
 
-      // --- Tooltip with offset ---
+      // --- Tooltip with word wrap ---
       if (hoverCountry) {
         const tooltipText = `${hoverCountry.name}: ${hoverCountry.users?.toLocaleString() || "N/A"} users`;
-        const padding = 5;
-        const tooltipWidth = p.textWidth(tooltipText) + 2 * padding;
-        const tooltipHeight = 25;
+        const padding = 6;
+        const maxWidth = 200;
 
-        let tooltipX = p.mouseX + 10;
-        let tooltipY = p.mouseY + 10;
+        p.textSize(14);
+        p.textAlign(p.LEFT, p.TOP);
 
-        if (tooltipX + tooltipWidth > canvasWidth) tooltipX = p.mouseX - tooltipWidth - 10;
-        if (tooltipY + tooltipHeight > canvasHeight) tooltipY = p.mouseY - tooltipHeight - 10;
+        const words = tooltipText.split(" ");
+        const lines = [];
+        let currentLine = "";
 
-        p.fill(0, 200);
+        words.forEach(word => {
+            const testLine = currentLine ? currentLine + " " + word : word;
+            const testWidth = p.textWidth(testLine);
+
+            if (testWidth > maxWidth - padding * 2) {
+            // Push old line and start new one
+            if (currentLine.length > 0) lines.push(currentLine);
+            currentLine = word;
+            } else {
+            currentLine = testLine;
+            }
+        });
+
+        if (currentLine.length > 0) lines.push(currentLine);
+
+        const tooltipWidth = Math.min(
+            maxWidth,
+            Math.max(...lines.map(l => p.textWidth(l))) + padding * 2
+        );
+
+        const lineHeight = 18;
+        const tooltipHeight = lines.length * lineHeight + padding * 2;
+
+        let tooltipX = p.mouseX + 12;
+        let tooltipY = p.mouseY + 12;
+
+        if (tooltipX + tooltipWidth > canvasWidth)
+            tooltipX = canvasWidth - tooltipWidth - 10;
+
+        if (tooltipY + tooltipHeight > canvasHeight)
+            tooltipY = canvasHeight - tooltipHeight - 10;
+
+        p.fill(0, 210);
         p.stroke(255);
         p.rect(tooltipX, tooltipY, tooltipWidth, tooltipHeight, 5);
-        p.fill(255);
+
         p.noStroke();
-        p.textSize(14);
-        p.textAlign(p.LEFT, p.CENTER);
-        p.text(tooltipText, tooltipX + padding, tooltipY + tooltipHeight / 2);
+        p.fill(255);
+
+        lines.forEach((line, i) => {
+            p.text(line, tooltipX + padding, tooltipY + padding + i * lineHeight);
+        });
       }
+
 
       // --- Color legend ---
       const legendX = canvasWidth - 110;
@@ -212,6 +237,7 @@
     }
   };
 })();
+
 
 
 
