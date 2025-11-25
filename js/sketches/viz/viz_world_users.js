@@ -8,7 +8,7 @@
       p.push();
       const canvasWidth = manager.canvasWidth || 1200;
       const canvasHeight = manager.canvasHeight || 800;
-      p.background(30);
+      p.background(0);
 
       const mousePt = p.createVector(p.mouseX, p.mouseY);
 
