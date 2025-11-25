@@ -33,15 +33,14 @@
         p.push();
         p.background(0);
   
-        // --- layout ---
-        // 🔹 Make graph shorter by increasing top/bottom margins
+        
         const margin = { top: 100, right: 40, bottom: 100, left: 70 };
         const w = p.width - margin.left - margin.right;
         const h = p.height - margin.top - margin.bottom;
   
         p.translate(margin.left, margin.top);
   
-        // --- find y-range ---
+        
         let minY = Infinity;
         let maxY = -Infinity;
         for (const d of data) {
@@ -56,7 +55,7 @@
         const xStep = w / (data.length - 1);
         const yScale = v => p.map(v, minY, maxY, h, 0);
   
-        // --- axes ---
+        
         p.stroke(255);
         p.strokeWeight(1);
         p.line(0, 0, 0, h);      // y-axis
@@ -78,8 +77,7 @@
           p.text(t.toFixed(1), -8, y);
         }
   
-        // --- x-axis labels (horizontal now) ---
-        // --- x-axis labels (horizontal, Feb 12–26) ---
+        
         p.textAlign(p.CENTER, p.TOP);
         p.textSize(10);
 
@@ -126,9 +124,10 @@
         p.line(x, 0, x, h);
         p.drawingContext.setLineDash([]);
 
-        // 🔹 label slightly to the LEFT of the line
+        
         p.noStroke();
         p.fill(238, 29, 82);
+        p.textSize(14);
         p.textAlign(p.RIGHT, p.BOTTOM);
         p.text("TikTok outage", x + 16, -10);
       }
@@ -141,7 +140,7 @@
         p.line(x, 0, x, h);
         p.drawingContext.setLineDash([]);
 
-        // 🔹 label slightly to the RIGHT of the line
+        
         p.noStroke();
         p.fill(105, 201, 208);
         p.textAlign(p.LEFT, p.BOTTOM);
