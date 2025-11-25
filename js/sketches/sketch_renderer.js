@@ -32,7 +32,7 @@
         draw: function (p, manager, ai, progress) {
             try { console.log('Renderer: delegating draw, ai=', ai); } catch (e) { }
 
-            if (ai <= 4) {
+            if (ai !== 2) {
                 window.VizTikTokMap.yearDropdown?.hide();
                 window.VizTikTokMap.yearLabel?.hide();
             }
@@ -48,26 +48,33 @@
             }
 
             if (ai === 2) {
-                window.Vizplatform_compare.draw(p, manager, ai, progress);
-                return;
-            }
-
-            if (ai === 3) {
-                window.VizBan.draw(p, manager, ai, progress);
-                return;
-            }
-
-            if (ai == 4) {
-                window.VizTimeline.draw(p, manager, ai, progress);
-                return;
-            }
-
-            if (ai > 4) {
                 window.VizTikTokMap.draw(p, manager, ai, progress);
                 window.VizTikTokMap.yearDropdown?.show();
                 window.VizTikTokMap.yearLabel?.show();
                 return;
             }
+
+            if (ai === 3) {
+                window.Vizplatform_compare.draw(p, manager, ai, progress);
+                return;
+            }
+
+            if (ai === 4) {
+                window.VizBan.draw(p, manager, ai, progress);
+                return;
+            }
+
+            if (ai > 4) {
+                window.VizTimeline.draw(p, manager, ai, progress);
+                return;
+            }
+
+            //if (ai > 4) {
+               // window.VizTikTokMap.draw(p, manager, ai, progress);
+              //  window.VizTikTokMap.yearDropdown?.show();
+               // window.VizTikTokMap.yearLabel?.show();
+              //  return;
+          //  }
         }           
     };
 })();
