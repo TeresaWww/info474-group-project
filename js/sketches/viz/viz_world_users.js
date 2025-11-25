@@ -12,7 +12,7 @@
 
       const mousePt = p.createVector(p.mouseX, p.mouseY);
 
-      // --- Load CSV once ---
+      
       if (!this.dataLoaded) {
         p.loadTable(
           'data/tiktok_users_by_country_2023_2025.csv',
@@ -24,12 +24,11 @@
         p.fill(255);
         p.textAlign(p.CENTER, p.CENTER);
         p.textSize(16);
-        p.text("Loading dataset...", canvasWidth / 2, canvasHeight / 2);
         p.pop();
         return;
       }
 
-      // --- Ensure country polygons exist ---
+      
       if (!window.country) {
         p.fill(255);
         p.textAlign(p.CENTER, p.CENTER);
@@ -39,7 +38,7 @@
         return;
       }
 
-      // --- Create year dropdown once ---
+      
       if (!this.dropdownCreated) {
         const visContainer = document.getElementById('vis');
 
@@ -67,12 +66,12 @@
         this.dropdownCreated = true;
       }
 
-      // --- Convert vertex paths to polygons ---
+      
       window.country.forEach(c => {
         if (!c.polygons && c.vertexPoint) c.polygons = convertPathToPolygons(c.vertexPoint, 1);
       });
 
-      // --- Compute map bounding box ---
+      
       let minX = Infinity, maxX = -Infinity, minY = Infinity, maxY = -Infinity;
       window.country.forEach(c => {
         if (c.polygons) {
@@ -87,8 +86,8 @@
         }
       });
 
-      // --- Scale and center map ---
-      const mapWidth = canvasWidth - 150; // space for legend
+      
+      const mapWidth = canvasWidth - 150; 
       const mapHeight = canvasHeight - 60;
       const scaleX = mapWidth / (maxX - minX);
       const scaleY = mapHeight / (maxY - minY);
@@ -96,7 +95,7 @@
       const offsetX = (canvasWidth - (maxX - minX) * scale) / 2 - minX * scale;
       const offsetY = (canvasHeight - (maxY - minY) * scale) / 2 - minY * scale;
 
-      // --- Compute min/max TikTok users ---
+      
       let minUsers = Infinity, maxUsers = -Infinity;
       const t = window.tiktokData;
       for (let r = 0; r < t.getRowCount(); r++) {
@@ -104,7 +103,7 @@
         if (!isNaN(val)) { minUsers = Math.min(minUsers, val); maxUsers = Math.max(maxUsers, val); }
       }
 
-      // --- Draw countries ---
+      
       let hoverCountry = null;
       window.country.forEach(c => {
         let row = t.findRow(c.name, 'country') || t.findRow(c.id, 'flagCode');
@@ -133,7 +132,7 @@
         }
       });
 
-      // --- Tooltip with word wrap ---
+      
       if (hoverCountry) {
         const tooltipText = `${hoverCountry.name}: ${hoverCountry.users?.toLocaleString() || "N/A"} users`;
         const padding = 6;
@@ -151,7 +150,7 @@
             const testWidth = p.textWidth(testLine);
 
             if (testWidth > maxWidth - padding * 2) {
-            // Push old line and start new one
+            
             if (currentLine.length > 0) lines.push(currentLine);
             currentLine = word;
             } else {
@@ -191,7 +190,7 @@
       }
 
 
-      // --- Color legend ---
+      
       const legendX = canvasWidth - 110;
       const legendY = 50;
       const legendHeight = 150;
@@ -210,7 +209,7 @@
       p.textAlign(p.CENTER, p.CENTER);
       p.text("TikTok Users", legendX + legendWidth / 2, legendY - 15);
 
-      // --- Helper functions ---
+      
       function pointInPoly(verts, pt, scale = 1, offsetX = 0, offsetY = 0) {
         let c = false;
         for (let i = 0, j = verts.length - 1; i < verts.length; j = i++) {
