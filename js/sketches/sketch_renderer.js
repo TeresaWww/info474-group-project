@@ -32,10 +32,10 @@
         draw: function (p, manager, ai, progress) {
             try { console.log('Renderer: delegating draw, ai=', ai); } catch (e) { }
 
-            // if (ai === 0) {
-            //     window.VizTitle.draw(p, manager, ai, progress);
-            //     return;
-            // }
+            //if (ai === 0) {
+            //    window.VizTitle.draw(p, manager, ai, progress);
+           //     return;
+           // }
 
             if (ai === 1) {
                 window.VizTikTokAge.draw(p, manager, ai, progress);
@@ -52,8 +52,13 @@
                 return;
             }
 
-            if (ai > 3) {
+            if (ai == 4) {
                 window.VizTimeline.draw(p, manager, ai, progress);
+                return;
+            }
+
+            if (ai > 4) {
+                window.VizTikTokMap.draw(p, manager, ai, progress);
                 return;
             }
         }           
