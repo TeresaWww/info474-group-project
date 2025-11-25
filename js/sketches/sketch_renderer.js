@@ -32,6 +32,11 @@
         draw: function (p, manager, ai, progress) {
             try { console.log('Renderer: delegating draw, ai=', ai); } catch (e) { }
 
+            if (ai <= 4) {
+                window.VizTikTokMap.yearDropdown?.hide();
+                window.VizTikTokMap.yearLabel?.hide();
+            }
+
             //if (ai === 0) {
             //    window.VizTitle.draw(p, manager, ai, progress);
            //     return;
@@ -59,6 +64,8 @@
 
             if (ai > 4) {
                 window.VizTikTokMap.draw(p, manager, ai, progress);
+                window.VizTikTokMap.yearDropdown?.show();
+                window.VizTikTokMap.yearLabel?.show();
                 return;
             }
         }           

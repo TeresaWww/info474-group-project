@@ -44,7 +44,14 @@
 
         this.yearLabel = p.createDiv('Select Year:');
         if (visContainer) this.yearLabel.parent(visContainer);
-        this.yearLabel.position(20, 30);
+        //this.yearLabel.position(20, 30);
+        //this.yearLabel.style('color', 'white');
+        //this.yearLabel.style('font-size', '14px');
+        //this.yearLabel.style('font-weight', 'bold');
+
+        this.yearLabel.style('position', 'absolute');
+        this.yearLabel.style('top', '10px');
+        this.yearLabel.style('left', '10px');
         this.yearLabel.style('color', 'white');
         this.yearLabel.style('font-size', '14px');
         this.yearLabel.style('font-weight', 'bold');
@@ -53,7 +60,15 @@
         ["2023", "2024", "2025"].forEach(y => this.yearDropdown.option(y));
         this.yearDropdown.selected(this.year);
         if (visContainer) this.yearDropdown.parent(visContainer);
-        this.yearDropdown.position(20, 50);
+        //this.yearDropdown.position(20, 50);
+        //this.yearDropdown.style('z-index', '1000');
+        //this.yearDropdown.style('color', 'black');
+       // this.yearDropdown.style('background-color', 'white');
+        //this.yearDropdown.style('font-size', '14px');
+
+        this.yearDropdown.style('position', 'absolute');
+        this.yearDropdown.style('top', '35px');
+        this.yearDropdown.style('left', '10px');
         this.yearDropdown.style('z-index', '1000');
         this.yearDropdown.style('color', 'black');
         this.yearDropdown.style('background-color', 'white');

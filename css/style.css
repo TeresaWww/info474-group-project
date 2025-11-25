@@ -157,6 +157,7 @@ img.tiktok-img {
   top: 160px;
   z-index: 100;
   margin-left: 80px;
+  /* position: relative; */
 
   /* height: 600px; */
   /* width: 600px; */
@@ -204,5 +205,7 @@ img.tiktok-img {
   stroke-width: 4px;
 
 }
+
+
 
 
