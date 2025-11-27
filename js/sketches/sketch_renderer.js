@@ -53,6 +53,12 @@
                 window.VizTikTokAge.draw(p, manager, ai, progress);
                 return;
             }
+            if (ai === 4) {
+                p.push();
+                p.background(0);  // full black background
+                p.pop();
+                return;
+            }
 
             if (ai === 5) {
                 window.VizTimeline.draw(p, manager, ai, progress);
