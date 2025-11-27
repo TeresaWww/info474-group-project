@@ -34,6 +34,8 @@
 
 
             if (ai === 1) {
+                window.VizTikTokMap.yearDropdown?.hide();
+                window.VizTikTokMap.yearLabel?.hide();
                 window.VizSocialNetworks.draw(p, manager, ai, progress);
                 return;
             }
@@ -46,6 +48,8 @@
             }
 
             if (ai === 3) {
+                window.VizTikTokMap.yearDropdown?.hide();
+                window.VizTikTokMap.yearLabel?.hide();
                 window.VizTikTokAge.draw(p, manager, ai, progress);
                 return;
             }
