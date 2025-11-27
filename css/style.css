@@ -99,9 +99,10 @@ img.tiktok-img {
 
 .hero-subtitle {
   font-size: 20px;
-  font-weight: 400;
+  font-weight: 600;
+  text-align: center;
   margin-top: 40px;
-  color: #4b494a;
+  color: white;
 }
 
 .container {

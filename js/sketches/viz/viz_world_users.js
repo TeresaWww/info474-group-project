@@ -67,7 +67,6 @@
         this.dropdownCreated = true;
       }
 
-      
       window.country.forEach(c => {
         if (!c.polygons && c.vertexPoint) c.polygons = convertPathToPolygons(c.vertexPoint, 1);
       });
@@ -238,21 +237,3 @@
     }
   };
 })();
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

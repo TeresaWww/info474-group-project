@@ -32,20 +32,23 @@
         draw: function (p, manager, ai, progress) {
             try { console.log('Renderer: delegating draw, ai=', ai); } catch (e) { }
 
-            if (ai !== 2) {
-                window.VizTikTokMap.yearDropdown?.hide();
-                window.VizTikTokMap.yearLabel?.hide();
-            }
-
             //if (ai === 0) {
             //    window.VizTitle.draw(p, manager, ai, progress);
            //     return;
            // }
 
+            if (window.VizTikTokMap) {
+                if (ai === 1) {  // 1 = first visualization (the map)
+                    window.VizTikTokMap.yearDropdown?.show();
+                    window.VizTikTokMap.yearLabel?.show();
+                } else {
+                    window.VizTikTokMap.yearDropdown?.hide();
+                    window.VizTikTokMap.yearLabel?.hide();
+                }
+            }
+
             if (ai === 1) {
                 window.VizTikTokMap.draw(p, manager, ai, progress);
-                window.VizTikTokMap.yearDropdown?.show();
-                window.VizTikTokMap.yearLabel?.show();
                 return;
             }
 
