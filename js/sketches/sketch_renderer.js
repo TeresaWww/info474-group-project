@@ -36,39 +36,39 @@
             //    window.VizTitle.draw(p, manager, ai, progress);
            //     return;
            // }
-            if (ai !== 1) {
-                window.VizTikTokMap.yearDropdown?.hide();
-                window.VizTikTokMap.yearLabel?.hide();
+            if (ai === 1) {
+                window.VizSocialNetworks.draw(p, manager, ai, progress);
+                return;
             }
 
-            if (ai === 1) {
+            if (ai === 2) {
                 window.VizTikTokMap.draw(p, manager, ai, progress);
                 window.VizTikTokMap.yearDropdown?.show();
                 window.VizTikTokMap.yearLabel?.show();
                 return;
             }
 
-            if (ai === 2) {
+            if (ai === 3) {
                 window.VizTikTokAge.draw(p, manager, ai, progress);
                 return;
             }
 
-            if (ai === 3) {
+            if (ai === 4) {
                 window.VizTimeline.draw(p, manager, ai, progress);
                 return;
             }
 
-            if (ai === 4) {
+            if (ai === 5) {
                 window.VizBan.draw(p, manager, ai, progress);
                 return;
             }
 
-            if (ai === 5) {
+            if (ai === 6) {
                 window.VizRednoteDownloads.draw(p, manager, ai, progress);
                 return;
             }
 
-            if (ai === 6) { 
+            if (ai === 7) { 
                 window.Vizplatform_compare.draw(p, manager, ai, progress);
                 return;
             }
