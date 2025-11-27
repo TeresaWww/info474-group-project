@@ -32,10 +32,7 @@
         draw: function (p, manager, ai, progress) {
             try { console.log('Renderer: delegating draw, ai=', ai); } catch (e) { }
 
-            //if (ai === 0) {
-            //    window.VizTitle.draw(p, manager, ai, progress);
-           //     return;
-           // }
+
             if (ai === 1) {
                 window.VizSocialNetworks.draw(p, manager, ai, progress);
                 return;
@@ -53,22 +50,20 @@
                 return;
             }
 
-            if (ai === 4) {
+            if (ai === 5) {
                 window.VizTimeline.draw(p, manager, ai, progress);
                 return;
             }
-
-            if (ai === 5) {
+            if (ai === 6) {
                 window.VizBan.draw(p, manager, ai, progress);
                 return;
             }
-
-            if (ai === 6) {
+            if (ai === 7) {
                 window.VizRednoteDownloads.draw(p, manager, ai, progress);
                 return;
             }
 
-            if (ai === 7) { 
+            if (ai === 8) { 
                 window.Vizplatform_compare.draw(p, manager, ai, progress);
                 return;
             }
