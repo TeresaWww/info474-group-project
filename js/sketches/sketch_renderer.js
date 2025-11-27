@@ -43,19 +43,19 @@
            // }
 
             if (ai === 1) {
-                window.VizTikTokAge.draw(p, manager, ai, progress);
-                return;
-            }
-
-            if (ai === 2) {
                 window.VizTikTokMap.draw(p, manager, ai, progress);
                 window.VizTikTokMap.yearDropdown?.show();
                 window.VizTikTokMap.yearLabel?.show();
                 return;
             }
 
+            if (ai === 2) {
+                window.VizTikTokAge.draw(p, manager, ai, progress);
+                return;
+            }
+
             if (ai === 3) {
-                window.Vizplatform_compare.draw(p, manager, ai, progress);
+                window.VizTimeline.draw(p, manager, ai, progress);
                 return;
             }
 
@@ -64,17 +64,15 @@
                 return;
             }
 
-            if (ai > 4) {
-                window.VizTimeline.draw(p, manager, ai, progress);
+            if (ai === 5) {
+                window.VizRednoteDownloads.draw(p, manager, ai, progress);
                 return;
             }
 
-            //if (ai > 4) {
-               // window.VizTikTokMap.draw(p, manager, ai, progress);
-              //  window.VizTikTokMap.yearDropdown?.show();
-               // window.VizTikTokMap.yearLabel?.show();
-              //  return;
-          //  }
+            if (ai === 6) { 
+                window.Vizplatform_compare.draw(p, manager, ai, progress);
+                return;
+            }
         }           
     };
 })();
