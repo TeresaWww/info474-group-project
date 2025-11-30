@@ -19,9 +19,6 @@
   
         const mouse = p.createVector(p.mouseX, p.mouseY);
   
-        // ------------------------------------------------------------
-        // LOAD CSV ONCE
-        // ------------------------------------------------------------
         if (!this.dataLoaded) {
           p.loadTable(
             "data/media_users_2025.csv",
@@ -43,9 +40,6 @@
           return;
         }
   
-        // ------------------------------------------------------------
-        // PARSE CSV DATA
-        // ------------------------------------------------------------
         let dataset = [];
         for (let r = 0; r < this.table.getRowCount(); r++) {
           let name = this.table.getString(r, "applications");
@@ -61,12 +55,11 @@
             highlight: name === "TikTok"
           });
         }
+        dataset.sort((a, b) => b.users - a.users);
+        dataset = dataset.slice(0, 10); 
   
         const maxUsers = Math.max(...dataset.map(d => d.users));
-  
-        // ------------------------------------------------------------
-        // DYNAMIC BAR HEIGHT
-        // ------------------------------------------------------------
+
         const totalRows = dataset.length;
         const rowH = chartHeight / totalRows;
         const barH = rowH * 0.65;
@@ -75,22 +68,16 @@
         // Animation
         this.animFrame = Math.min(this.animFrame + 0.04, 1);
         let anim = this.animFrame;
-  
-        // ------------------------------------------------------------
-        // TITLE (WHITE)
-        // ------------------------------------------------------------
+
         p.fill(255);
         p.textSize(32);
         p.textAlign(p.LEFT, p.CENTER);
         p.text(
-          "Most popular social media worldwide",
+          "Top 10 Social Media Platforms (2025)",
           margin.left,
           margin.top - 40
         );
   
-        // ------------------------------------------------------------
-        // AXIS LABEL (WHITE)
-        // ------------------------------------------------------------
         p.textSize(16);
         p.fill(220);
         p.text(
@@ -99,9 +86,6 @@
           H - margin.bottom + 40
         );
   
-        // ------------------------------------------------------------
-        // DRAW BARS (INTERACTIVE)
-        // ------------------------------------------------------------
         p.push();
         p.translate(margin.left, margin.top);
   
@@ -144,10 +128,7 @@
         });
   
         p.pop();
-  
-        // ------------------------------------------------------------
-        // X-AXIS (LIGHT GRAY)
-        // ------------------------------------------------------------
+
         p.stroke(150);
         p.line(
           margin.left,
@@ -170,9 +151,6 @@
           p.text(t, x, H - margin.bottom + 10);
         });
   
-        // ------------------------------------------------------------
-        // TOOLTIP (WHITE TEXT ON DARK BG)
-        // ------------------------------------------------------------
         if (this.hoverIndex !== -1) {
           let d = dataset[this.hoverIndex];
   
