@@ -2,6 +2,7 @@
   window.VizTikTokAge = {
     dataLoaded: false,
     table: null,
+    hoverIndex: { group: -1, year: "" },
 
     draw: function (p, manager, ai, progress) {
 
@@ -18,7 +19,6 @@
           (err) => console.error("CSV load error:", err)
         );
 
-        // loading screen
         p.fill(255);
         p.textAlign(p.CENTER, p.CENTER);
         p.textSize(24);
@@ -26,147 +26,145 @@
         return;
       }
 
-      // 2. CONVERT CSV into your expected data[] array
+      // 2. Parse CSV
       let data = [];
       for (let r = 0; r < this.table.getRowCount(); r++) {
-        let age = this.table.getString(r, "Age Group");       // column: age group
-        let raw = this.table.getString(r, "2020");     // column: percentage
-        raw = raw.replace(/[^0-9.-]/g, "");             // clean formatting
-        let value = Number(raw);
-
-        data.push({ age, value });
+        data.push({
+          age: this.table.getString(r, "Age Group"),
+          y2020: Number(this.table.getString(r, "2020")),
+          y2023: Number(this.table.getString(r, "2023/2024")),
+        });
       }
 
-      if (data.length === 0) {
-        p.fill(255);
-        p.textAlign(p.CENTER, p.CENTER);
-        p.text("No data found in CSV", p.width / 2, p.height / 2);
-        return;
-      }
+      if (data.length === 0) return;
 
-      // ---- ORIGINAL CHART CODE STARTS HERE ----
+      // --------------------
+      // DRAW STARTS
+      // --------------------
       p.push();
-
-      p.noStroke();
       p.background(0);
 
-      p.fill(255);
-      p.textAlign(p.CENTER, p.TOP);
-      p.textSize(28);
-      p.text("TikTok Users by Age in United States", p.width / 2, 35);
+      const margin = { top: 80, right: 80, bottom: 90, left: 120 };
+      const innerW = p.width - margin.left - margin.right;
+      const innerH = p.height - margin.top - margin.bottom;
+      const n = data.length;
 
-      const margin = {
-        top: 90,
-        right: 80,
-        bottom: 90,
-        left: 110,
-      };
-      const w = p.width - margin.left - margin.right;
-      const h = p.height - margin.top - margin.bottom;
+      const groupGap = 40;
+      const barWidth = innerW / n / 3;
+      const maxVal = Math.max(...data.flatMap(d => [d.y2020, d.y2023]));
+
+      const xScale = (i) => i * (innerW / n) + barWidth;
+      const yScale = (v) => p.map(v, 0, maxVal, 0, innerH);
 
       p.translate(margin.left, margin.top);
 
-      const n = data.length;
-      const barGap = 12;
-      const barHeight = (h - barGap * (n - 1)) / n;
+      // // Title
+      // p.fill(255);
+      // p.textAlign(p.CENTER, p.TOP);
+      // p.textSize(26);
+      // p.text("TikTok’s Rapid Rise to Popularity", innerW / 2, -50);
 
-      const minVal = 0;
-      const maxVal = 40;
-      const stepVal = 5;
-      const steps = (maxVal - minVal) / stepVal;
+      // // Subtitle
+      // p.textSize(16);
+      // p.fill(220);
+      // p.text(
+      //   "Share of U.S. adults who regularly use TikTok, by age group",
+      //   innerW / 2,
+      //   -20
+      // );
 
-      const xScale = (v) => p.map(v, minVal, maxVal, 0, w);
+      // Legend
+      p.textAlign(p.LEFT, p.CENTER);
+      p.textSize(15);
 
-      const axisY = h;
-
+      p.fill(60);
+      p.rect(0, -55, 18, 18, 3);
       p.fill(255);
-      p.strokeWeight(1.2);
-      p.line(0, axisY, w, axisY); // x-axis
+      p.text("2020", 28, -46);
 
-      p.textSize(12);
-      p.textAlign(p.CENTER, p.TOP);
+      p.fill(180, 50, 70);
+      p.rect(90, -55, 18, 18, 3);
+      p.fill(255);
+      p.text("2023/2024", 120, -46);
 
-      for (let i = 0; i <= steps; i++) {
-        const xVal = minVal + i * stepVal;
-        const x = xScale(xVal);
+      // X-axis
+      p.stroke(255);
+      p.line(0, innerH, innerW, innerH);
 
-        p.line(x, 0, x, axisY);
-        p.stroke(0);
-        p.line(x, axisY, x, axisY + 4);
+      this.hoverIndex = { group: -1, year: "" };
 
+      // Bars
+      data.forEach((d, i) => {
+        const groupX = xScale(i);
+        const barX2020 = groupX;
+        const barX2023 = groupX + barWidth + 8;
+
+        const h2020 = yScale(d.y2020);
+        const h2023 = yScale(d.y2023);
+
+        const y2020 = innerH - h2020;
+        const y2023 = innerH - h2023;
+
+        // Hover detection
+        const mx = p.mouseX - margin.left;
+        const my = p.mouseY - margin.top;
+
+        const isHover2020 =
+          mx > barX2020 && mx < barX2020 + barWidth &&
+          my > y2020 && my < innerH;
+
+        const isHover2023 =
+          mx > barX2023 && mx < barX2023 + barWidth &&
+          my > y2023 && my < innerH;
+
+        // Draw bars
+        // 2020 (gray/black)
+        p.fill(isHover2020 ? p.color(120) : p.color(50));
         p.noStroke();
+        p.rect(barX2020, y2020, barWidth, h2020);
+
+        // 2023/2024 (red)
+        p.fill(isHover2023 ? p.color(255, 100, 120) : p.color(180, 50, 70));
+        p.rect(barX2023, y2023, barWidth, h2023);
+
+        // Store hover info
+        if (isHover2020) this.hoverIndex = { group: i, year: "2020" };
+        if (isHover2023) this.hoverIndex = { group: i, year: "2023" };
+
+        // Labels above bars
         p.fill(255);
-        p.text(xVal + "%", x, axisY + 8);
-      }
+        p.textAlign(p.CENTER, p.BOTTOM);
+        p.textSize(16);
+        p.text(d.y2020 + "%", barX2020 + barWidth / 2, y2020 - 5);
+        p.text(d.y2023 + "%", barX2023 + barWidth / 2, y2023 - 5);
 
-      // y-axis label
-      p.push();
-      p.translate(-75, h / 2);
-      p.rotate(-p.HALF_PI);
-      p.textAlign(p.CENTER, p.CENTER);
-      p.textSize(14);
-      p.fill(255);
-      p.text("Age Group", 0, 0);
-      p.pop();
+        // Age group labels
+        p.textAlign(p.CENTER, p.TOP);
+        p.textSize(15);
+        p.text(d.age, groupX + barWidth, innerH + 10);
+      });
 
-      // Hover setup
-      const baseColor = p.color(198, 26, 69);
-      const dimColor = p.color(198, 26, 69, 90);
+      // Tooltip
+      if (this.hoverIndex.group !== -1) {
+        const d = data[this.hoverIndex.group];
+        const value =
+          this.hoverIndex.year === "2020" ? d.y2020 : d.y2023;
+        const label =
+          this.hoverIndex.year === "2020" ? "2020" : "2023/2024";
 
-      const localMouseX = p.mouseX - margin.left;
-      const localMouseY = p.mouseY - margin.top;
-      let hoveredIndex = -1;
-
-      if (localMouseX >= 0 && localMouseX <= w && localMouseY >= 0 && localMouseY <= h) {
-        for (let i = 0; i < n; i++) {
-          const y = i * (barHeight + barGap);
-          const barW = xScale(data[i].value);
-
-          if (
-            localMouseX >= 0 &&
-            localMouseX <= barW &&
-            localMouseY >= y &&
-            localMouseY <= y + barHeight
-          ) {
-            hoveredIndex = i;
-            break;
-          }
-        }
-      }
-
-      // Draw bars
-      for (let i = 0; i < n; i++) {
-        const d = data[i];
-        const y = i * (barHeight + barGap);
-        const barW = xScale(d.value);
-
+        p.fill(30);
         p.noStroke();
-        p.fill(hoveredIndex === -1 || hoveredIndex === i ? baseColor : dimColor);
-        p.rect(0, y, barW, barHeight, 8);
+        p.rect(p.mouseX + 15, p.mouseY - 20, 160, 50, 6);
 
-        // Age labels
         p.fill(255);
-        p.textAlign(p.RIGHT, p.CENTER);
-        p.textSize(14);
-        p.text(d.age, -10, y + barHeight / 2);
-
-        // Hover value
-        if (hoveredIndex === i) {
-          p.fill(255);
-          p.textSize(18);
-
-          let labelX = barW > 70 ? barW - 5 : barW + 8;
-          p.textAlign(barW > 70 ? p.RIGHT : p.LEFT, p.CENTER);
-
-          p.text(d.value.toFixed(1) + "%", labelX, y + barHeight / 2);
-        }
+        p.textAlign(p.LEFT, p.CENTER);
+        p.textSize(16);
+        p.text(
+          `${d.age} — ${label}: ${value}%`,
+          p.mouseX + 25,
+          p.mouseY + 5
+        );
       }
-
-      // Bottom label
-      p.fill(255);
-      p.textAlign(p.CENTER, p.TOP);
-      p.textSize(14);
-      p.text("Proportion of Users", w / 2, h + 40);
 
       p.pop();
     },
