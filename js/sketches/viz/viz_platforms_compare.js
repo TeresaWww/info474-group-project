@@ -54,24 +54,26 @@ window.lineAnimation = {
             });
 
             var years = Object.keys(dataMap).map(y => parseInt(y)).sort((a, b) => a - b);
-            var chartData = years.map(y => ({
-                year: y,
-                Facebook: dataMap[y]['Facebook'] || null,
-                Instagram: dataMap[y]['Instagram'] || null,
-                Pinterest: dataMap[y]['Pinterest'] || null,
-                SnapChat: dataMap[y]['SnapChat'] || null,
-                Twitter: dataMap[y]['Twitter'] || null,
-                TikTok: dataMap[y]['TikTok'] || null
-            }));
 
-            var platforms = [
-                { key: "Facebook", color: "#4DA6FF" },
-                { key: "Instagram", color: "#FF5E99" },
-                { key: "Pinterest", color: "#FF3355" },
-                { key: "SnapChat", color: "#FFF500" },
-                { key: "Twitter", color: "#B388FF" },
-                { key: "TikTok", color: "#69F6FF" }
+            var chartData = years.map(year => {
+
+                return Object.assign({ year }, dataMap[year]);
+            });
+
+            var platformSet = new Set();
+            Object.values(dataMap).forEach(yearObj => {
+                Object.keys(yearObj).forEach(pf => platformSet.add(pf));
+            });
+
+            var palette = [
+                "#4DA6FF", "#FF5E99", "#FF3355", "#FFF500", "#B388FF",
+                "#69F6FF", "#00FFA2", "#FFA200", "#9D4EDD", "#FF7090"
             ];
+
+            var platforms = Array.from(platformSet).map((pf, i) => ({
+                key: pf,
+                color: palette[i % palette.length]
+            }));
 
             var left = manager.offsetX || 50;
             var top = manager.offsetY || 20;
