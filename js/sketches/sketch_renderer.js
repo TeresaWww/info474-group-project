@@ -50,7 +50,7 @@
             if (ai === 3) {
                 window.VizTikTokMap.yearDropdown?.hide();
                 window.VizTikTokMap.yearLabel?.hide();
-                window.VizTikTokAge.draw(p, manager, ai, progress);
+                window.TikTokAge.draw(p, manager, ai, progress);
                 return;
             }
 
