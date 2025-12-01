@@ -109,9 +109,6 @@ img.tiktok-img {
   width: 890px;
 }
 
-#graphic {
-  padding-top: 60px;
-}
 
 
 #sections {
@@ -120,7 +117,14 @@ img.tiktok-img {
   width: 250px;
   top: 0px;
   z-index: 90;
-  padding-bottom: 200px;
+  padding-bottom: 20px;
+}
+
+#sections .section-title h2 {
+  width:max-content;
+  font-size: 32px;
+  font-weight: 700;
+  color:#EE1D52;
 }
 
 .intro-step {
@@ -144,7 +148,7 @@ img.tiktok-img {
   font-size: 20px;
   font-weight: bold;
   margin-bottom: 2px;
-  color: #FFFFFF;
+  color:#69C9D0;
   line-height: 1.2em;
 }
 
@@ -179,7 +183,7 @@ img.tiktok-img {
   transition: opacity 260ms ease, transform 260ms ease;
 }
 
-#vis .title {
+#vis .header {
   font-size:120px;
   text-anchor: middle;
 }

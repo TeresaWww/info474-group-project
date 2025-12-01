@@ -37,7 +37,6 @@ function startP5() {
                     p.clear(); 
                     return;
                 }
-                p.background(255);
                 self.draw(p);
             };
         };

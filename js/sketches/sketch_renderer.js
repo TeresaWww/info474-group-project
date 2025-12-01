@@ -53,28 +53,37 @@
                 window.VizTikTokAge.draw(p, manager, ai, progress);
                 return;
             }
+
             if (ai === 4) {
-                p.push();
-                p.background(0);  // full black background
-                p.pop();
+                p.clear();
                 return;
             }
 
-            if (ai === 5) {
+            if (ai === 6) {
                 window.VizTimeline.draw(p, manager, ai, progress);
                 return;
             }
-            if (ai === 6) {
+            if (ai === 7) {
                 window.VizBan.draw(p, manager, ai, progress);
                 return;
             }
-            if (ai === 7) {
+
+            if (ai === 8) {
+                p.clear();
+                return;
+            }
+            if (ai === 9) {
                 window.VizRednoteDownloads.draw(p, manager, ai, progress);
                 return;
             }
 
-            if (ai === 8) { 
+            if (ai === 10) { 
                 window.Vizplatform_compare.draw(p, manager, ai, progress);
+                return;
+            }
+
+            if (ai === 11) { 
+                p.clear();
                 return;
             }
         }           

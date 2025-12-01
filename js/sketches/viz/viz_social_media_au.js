@@ -108,9 +108,9 @@
           if (isHover) {
             p.fill(255, 150, 0); // hover orange
           } else if (d.highlight) {
-            p.fill(180, 50, 70); // red TikTok
+            p.fill("#EE1D52"); // red TikTok
           } else {
-            p.fill(120); // gray bars
+            p.fill(60); // gray bars
           }
   
           p.noStroke();
