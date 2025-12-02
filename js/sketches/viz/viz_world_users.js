@@ -96,12 +96,26 @@
       const offsetY = (canvasHeight - (maxY - minY) * scale) / 2 - minY * scale;
 
       
-      let minUsers = Infinity, maxUsers = -Infinity;
+      // Compute min/max using only valid numeric user counts
+      let values = [];
       const t = window.tiktokData;
+      const yearCol = `TikTokUsers_${window.VizTikTokMap.year}`;
+
       for (let r = 0; r < t.getRowCount(); r++) {
-        const val = parseFloat(t.getRow(r).get(`TikTokUsers_${window.VizTikTokMap.year}`)?.trim());
-        if (!isNaN(val)) { minUsers = Math.min(minUsers, val); maxUsers = Math.max(maxUsers, val); }
+        let raw = t.getRow(r).get(yearCol);
+
+        if (!raw || raw.trim() === "") continue;  // ignore blanks
+
+        let val = parseFloat(raw);
+
+        if (!isNaN(val) && val > 0) {   // ignore NaN and 0
+          values.push(val);
+        }
       }
+
+      let minUsers = Math.min(...values);
+      let maxUsers = Math.max(...values);
+
 
       
       let hoverCountry = null;
