@@ -4,6 +4,15 @@
     dataLoaded: false,
     dropdownCreated: false,
 
+    // Formats numbers using K/M/B for readability
+    formatUsers: function(n) {
+      if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1) + "B";
+      if (n >= 1_000_000)     return (n / 1_000_000).toFixed(1) + "M";
+      if (n >= 1_000)         return (n / 1_000).toFixed(1) + "K";
+      return n?.toString() || "N/A";
+    },
+
+
     draw: function (p, manager, ai, progress) {
       p.push();
       const canvasWidth = manager.canvasWidth || 1200;
@@ -96,7 +105,7 @@
       const offsetY = (canvasHeight - (maxY - minY) * scale) / 2 - minY * scale;
 
       
-      // Compute min/max using only valid numeric user counts
+      
       let values = [];
       const t = window.tiktokData;
       const yearCol = `TikTokUsers_${window.VizTikTokMap.year}`;
@@ -104,11 +113,11 @@
       for (let r = 0; r < t.getRowCount(); r++) {
         let raw = t.getRow(r).get(yearCol);
 
-        if (!raw || raw.trim() === "") continue;  // ignore blanks
+        if (!raw || raw.trim() === "") continue; 
 
         let val = parseFloat(raw);
 
-        if (!isNaN(val) && val > 0) {   // ignore NaN and 0
+        if (!isNaN(val) && val > 0) { 
           values.push(val);
         }
       }
@@ -148,7 +157,8 @@
 
       
       if (hoverCountry) {
-        const tooltipText = `${hoverCountry.name}: ${hoverCountry.users?.toLocaleString() || "N/A"} users`;
+        //const tooltipText = `${hoverCountry.name}: ${hoverCountry.users?.toLocaleString() || "N/A"} users`;
+        const tooltipText = `${hoverCountry.name}: ${this.formatUsers(hoverCountry.users)} users`;
         const padding = 6;
         const maxWidth = 200;
 
@@ -219,8 +229,10 @@
       p.fill(255);
       p.textSize(12);
       p.textAlign(p.LEFT, p.CENTER);
-      p.text(maxUsers.toLocaleString(), legendX + legendWidth + 5, legendY);
-      p.text(minUsers.toLocaleString(), legendX + legendWidth + 5, legendY + legendHeight);
+      //p.text(maxUsers.toLocaleString(), legendX + legendWidth + 5, legendY);
+      //p.text(minUsers.toLocaleString(), legendX + legendWidth + 5, legendY + legendHeight);
+      p.text(this.formatUsers(maxUsers), legendX + legendWidth + 5, legendY);
+      p.text(this.formatUsers(minUsers), legendX + legendWidth + 5, legendY + legendHeight);
       p.textAlign(p.CENTER, p.CENTER);
       p.text("TikTok Users", legendX + legendWidth / 2, legendY - 15);
 
