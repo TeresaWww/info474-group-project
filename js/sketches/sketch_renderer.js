@@ -44,21 +44,21 @@
 
             if (ai === 3) {
                 p.clear();
-                window.VizTikTokMap.yearDropdown?.hide();
                 window.VizTikTokMap.yearLabel?.hide();
+                window.VizTikTokMap.btnGroup?.hide();
                 return;
             }
 
             if (ai === 4) {
                 window.VizTikTokMap.draw(p, manager, ai, progress);
-                window.VizTikTokMap.yearDropdown?.show();
                 window.VizTikTokMap.yearLabel?.show();
+                window.VizTikTokMap.btnGroup?.show();
                 return;
             }
 
             if (ai === 5) {
-                window.VizTikTokMap.yearDropdown?.hide();
                 window.VizTikTokMap.yearLabel?.hide();
+                window.VizTikTokMap.btnGroup?.hide();
                 window.TikTokAge.draw(p, manager, ai, progress);
                 return;
             }

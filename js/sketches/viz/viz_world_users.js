@@ -3,6 +3,9 @@
     year: 2025,
     dataLoaded: false,
     dropdownCreated: false,
+    globalMin: null,
+    globalMax: null,
+
 
     
     formatUsers: function(n) {
@@ -38,6 +41,24 @@
         return;
       }
 
+      if (!this.globalMin || !this.globalMax) {
+        let allValues = [];
+      
+        for (let yr of ["2023","2024","2025"]) {
+          let col = `TikTokUsers_${yr}`;
+          for (let r = 0; r < window.tiktokData.getRowCount(); r++) {
+            let v = parseFloat(window.tiktokData.getRow(r).get(col));
+            if (!isNaN(v) && v > 0) {
+              allValues.push(v);
+            }
+          }
+        }
+      
+        this.globalMin = Math.min(...allValues);
+        this.globalMax = Math.max(...allValues);
+      }
+          
+
       
       if (!window.country) {
         p.fill(255);
@@ -51,31 +72,55 @@
       
       if (!this.dropdownCreated) {
         const visContainer = document.getElementById('vis');
-
-        this.yearLabel = p.createDiv('Select Year:');
-        if (visContainer) this.yearLabel.parent(visContainer);
-        this.yearLabel.position(20, 30);
+      
+        // Updated label text
+        this.yearLabel = p.createDiv("Select a year to explore");
+        this.yearLabel.parent(visContainer);
+        this.yearLabel.position(20, 20);
         this.yearLabel.style('color', 'white');
         this.yearLabel.style('font-size', '14px');
         this.yearLabel.style('font-weight', 'bold');
-
-        this.yearDropdown = p.createSelect();
-        ["2023", "2024", "2025"].forEach(y => this.yearDropdown.option(y));
-        this.yearDropdown.selected(this.year);
-        if (visContainer) this.yearDropdown.parent(visContainer);
-        this.yearDropdown.position(20, 50);
-        this.yearDropdown.style('z-index', '1000');
-        this.yearDropdown.style('color', 'black');
-        this.yearDropdown.style('background-color', 'white');
-        this.yearDropdown.style('font-size', '14px');
-
-
-        this.yearDropdown.changed(() => {
-          window.VizTikTokMap.year = parseInt(this.yearDropdown.value());
+      
+        // Button container
+        this.btnGroup = p.createDiv('');
+        this.btnGroup.parent(visContainer);
+        this.btnGroup.position(20, 45);
+      
+        const years = [2023, 2024, 2025];
+        years.forEach(y => {
+          const btn = p.createButton(y.toString());
+          btn.parent(this.btnGroup);
+          btn.style('margin-right', '8px');
+          btn.style('padding', '4px 10px');
+          btn.style('background', '#111');
+          btn.style('color', 'white');
+          btn.style('border', '1px solid #444');
+          btn.style('border-radius', '4px');
+          btn.style('cursor', 'pointer');
+      
+          btn.mousePressed(() => {
+            this.year = y;
+          
+            // update label
+            this.yearLabel.html("Select a year to explore");
+          
+            // Reset all HTML <button> elements
+            [...this.btnGroup.elt.children].forEach(b => {
+              b.style.background = "#111";   // regular DOM
+              b.style.color = "white";       // regular DOM
+            });
+          
+            // Highlight selected p5 button
+            btn.style("background", "#69C9D0"); // p5.Element API
+            btn.style("color", "black");
+          });
         });
-
+      
         this.dropdownCreated = true;
       }
+      
+      
+      
 
       window.country.forEach(c => {
         if (!c.polygons && c.vertexPoint) c.polygons = convertPathToPolygons(c.vertexPoint, 1);
@@ -134,10 +179,10 @@
         let users = row ? parseFloat(row.get(`TikTokUsers_${window.VizTikTokMap.year}`)?.trim()) : NaN;
 
         let col = p.color(200, 200, 200); // light gray if no data
-        if (!isNaN(users) && maxUsers !== minUsers) {
-          const amt = (users - minUsers) / (maxUsers - minUsers);
-          col = p.lerpColor(p.color(200, 230, 255), p.color(0, 50, 200), amt);
-        }
+        if (!isNaN(users)) {
+          const amt = (users - this.globalMin) / (this.globalMax - this.globalMin);
+          col = p.lerpColor(p.color("#69C9D0"), p.color("#001A4D"), amt);
+        }        
 
         p.fill(col);
         p.stroke(150);
@@ -222,7 +267,7 @@
       const legendWidth = 20;
       p.noStroke();
       for (let i = 0; i <= 1; i += 0.01) {
-        const col = p.lerpColor(p.color(200, 230, 255), p.color(0, 50, 200), 1 - i);
+        const col = p.lerpColor(p.color("#69C9D0"), p.color("#001A4D"), 1 - i);
         p.fill(col);
         p.rect(legendX, legendY + i * legendHeight, legendWidth, legendHeight * 0.01);
       }
@@ -230,10 +275,9 @@
       p.fill(255);
       p.textSize(12);
       p.textAlign(p.LEFT, p.CENTER);
-      //p.text(maxUsers.toLocaleString(), legendX + legendWidth + 5, legendY);
-      //p.text(minUsers.toLocaleString(), legendX + legendWidth + 5, legendY + legendHeight);
-      p.text(this.formatUsers(maxUsers), legendX + legendWidth + 5, legendY);
-      p.text(this.formatUsers(minUsers), legendX + legendWidth + 5, legendY + legendHeight);
+      p.text(this.formatUsers(this.globalMax), legendX + legendWidth + 5, legendY);
+      p.text(this.formatUsers(this.globalMin), legendX + legendWidth + 5, legendY + legendHeight);
+      
       p.textAlign(p.CENTER, p.CENTER);
       p.text("TikTok Users", legendX + legendWidth / 2, legendY - 15);
 
