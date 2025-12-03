@@ -38,14 +38,14 @@
             }
 
             if (ai === 2) {
-                p.clear();
+                window.VizSocialNetworks.draw(p, manager, ai, progress);
                 return;
             }
 
             if (ai === 3) {
+                p.clear();
                 window.VizTikTokMap.yearDropdown?.hide();
                 window.VizTikTokMap.yearLabel?.hide();
-                window.VizSocialNetworks.draw(p, manager, ai, progress);
                 return;
             }
 

@@ -79,12 +79,11 @@
   
         maxTotalDownloads *= 1.1;
   
-        // --- Animation: One full bar appears at a time ---
+        // --- Animation: all bars grow together from bottom ---
         this.animFrame++;
-        const framesPerBar = 7;
-        const lastBarStart = (rows.length - 1) * framesPerBar;
-        const highlightDelay = lastBarStart + 28;
-        const highlightOn = this.animFrame > highlightDelay;
+        const totalFrames = 55; 
+        const t = p.constrain(this.animFrame / totalFrames, 0, 1);
+        const highlightOn = (this.animFrame > totalFrames + 17);
 
         // --- Chart base values ---
         const xStep = chartWidth / rowCount;
@@ -142,53 +141,54 @@
         for (let i = 0; i < rows.length; i++) {
           const d = rows[i];
           const xCenter = xOffsetStart + xStep * (i + 0.5);
-  
-          // Reveal this bar only when its "frame" has arrived
-          const barStart = i * framesPerBar;
-          if (this.animFrame < barStart) continue;
-  
+        
           let currentTop = yBase;
-  
+        
+          const hChinaFull = d.china * scaleY;
+          const hUSFull    = d.us    * scaleY;
+          const hRestFull  = d.rest  * scaleY;
+        
+          const hChina = hChinaFull * t;
+          const hUS    = hUSFull    * t;
+          const hRest  = hRestFull  * t;
+        
           // --- China segment ---
-          const hChina = d.china * scaleY;
           const yChinaTop = currentTop - hChina;
           p.fill(colorChina);
           p.stroke(0);
           p.rect(xCenter - barWidth / 2, yChinaTop, barWidth, hChina);
           currentTop = yChinaTop;
-  
+        
           // --- US segment ---
-          const hUS = d.us * scaleY;
           const yUSTop = currentTop - hUS;
-  
+        
           const isLastBar = i === rows.length - 1;
           const usColor = (isLastBar && highlightOn) ? colorUSHighlight : colorUSNormal;
-  
+        
           p.fill(usColor);
           p.rect(xCenter - barWidth / 2, yUSTop, barWidth, hUS);
-  
-          // Store highlight circle position
+        
+          // Highlight circle setup
           if (isLastBar && highlightOn && hUS > 0) {
             this.highlightCircleCenter = {
               x: xCenter,
               y: yUSTop + hUS / 2,
-              r: Math.max(barWidth * 1.3, 45),
+              r: Math.max(barWidth * 1.3, 47),
             };
           }
-  
+        
           currentTop = yUSTop;
-  
+        
           // --- Rest of world ---
-          const hRest = d.rest * scaleY;
           const yRestTop = currentTop - hRest;
           p.fill(colorRest);
           p.rect(xCenter - barWidth / 2, yRestTop, barWidth, hRest);
-  
-          // hover detection
+        
+          // Hover Detection
           if (mousePt.x >= xCenter - barWidth / 2 &&
-            mousePt.x <= xCenter + barWidth / 2 &&
-            mousePt.y >= margin.top &&
-            mousePt.y <= yBase) {
+              mousePt.x <= xCenter + barWidth / 2 &&
+              mousePt.y >= margin.top &&
+              mousePt.y <= yBase) {
             hoverIndex = i;
           }
         }
