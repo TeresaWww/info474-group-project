@@ -68,6 +68,11 @@
                 return;
             }
 
+            if (ai === 7) {
+                p.clear();
+                return;
+            }
+
             if (ai === 8) {
                 window.VizTimeline.draw(p, manager, ai, progress);
                 return;
