@@ -33,7 +33,7 @@
             try { console.log('Renderer: delegating draw, ai=', ai); } catch (e) { }
 
             if (ai === 1) {
-                window.VizIntroImage.draw(p, manager, ai, progress);
+                p.clear();
                 return;
             }
 

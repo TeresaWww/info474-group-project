@@ -10,7 +10,7 @@ function startP5() {
     function SketchManager() {
         this.width = 700;
         this.height = 600;
-        this.margin = { top: 0, left: 80, bottom: 40, right: 10 };
+        this.margin = { top: 0, left: 80, bottom: 90, right: 10 };
         this.canvasWidth = this.width + this.margin.left + this.margin.right;
         this.canvasHeight = this.height + this.margin.top + this.margin.bottom;
 
