@@ -6,6 +6,7 @@
       hoverIndex: -1,
   
       draw: function (p, manager, ai, progress) {
+        p.textFont("TiemposTextWeb-Regular");
         p.push();
   
         const W = manager.canvasWidth;
@@ -49,11 +50,15 @@
           raw = raw.replace(/[^0-9.-]/g, "");
           let users = Number(raw);
   
+          let year = this.table.getString(r, "year");
+
           dataset.push({
             name,
             users,
+            year,
             highlight: name === "TikTok"
           });
+
         }
         dataset.sort((a, b) => b.users - a.users);
         dataset = dataset.slice(0, 10); 
@@ -75,15 +80,24 @@
         p.text(
           "Top 10 Social Media Platforms (2025)",
           margin.left,
-          margin.top - 40
+          margin.top - 50
         );
+
+        p.textSize(15);
+        p.fill(150);
+        p.text(
+          "Hover to see what year each platform was launched",
+          margin.right + 150,
+          margin.top - 20
+        );
+
   
         p.textSize(16);
         p.fill(220);
         p.text(
-          "Number of active users in millions →",
-          margin.left,
-          H - margin.bottom + 40
+          "Number of active users (in millions)",
+          margin.right + 100,
+          H - margin.bottom + 50
         );
   
         p.push();
@@ -106,7 +120,7 @@
   
           // Bar color
           if (isHover) {
-            p.fill(255, 150, 0); // hover orange
+            p.fill("#69C9D0"); // hover orange
           } else if (d.highlight) {
             p.fill("#EE1D52"); // red TikTok
           } else {
@@ -156,13 +170,13 @@
   
           p.noStroke();
           p.fill(30);
-          p.rect(mouse.x + 12, mouse.y - 20, 180, 55, 6);
+          p.rect(mouse.x + 12, mouse.y - 23, 180, 55, 6);
   
           p.fill(255);
           p.textSize(16);
           p.textAlign(p.LEFT, p.CENTER);
           p.text(`${d.name}`, mouse.x + 20, mouse.y - 5);
-          p.text(`${d.users.toLocaleString()}M users`, mouse.x + 20, mouse.y + 15);
+          p.text(`Launched in ${d.year}`, mouse.x + 20, mouse.y + 15);          
   
           p.cursor(p.HAND);
         } else {
