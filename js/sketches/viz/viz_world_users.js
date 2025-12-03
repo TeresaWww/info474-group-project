@@ -19,6 +19,7 @@
       const canvasHeight = manager.canvasHeight || 800;
       p.background(0);
 
+
       const mousePt = p.createVector(p.mouseX, p.mouseY);
 
       
@@ -258,6 +259,7 @@
         }
         return polygons;
       }
+
 
       p.pop();
     }
