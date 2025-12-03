@@ -81,12 +81,12 @@ window.lineAnimation = {
             var width = (manager.width || 600) - 80;
             var height = (manager.height || 350) - 40;
 
-            // Draw graph title
+            
             p.push();
-            p.fill(255); // white text
-            p.textSize(20); // larger font for title
-            p.textAlign(p.CENTER, p.TOP); // center horizontally, top-aligned vertically
-            p.text("US Social Network Users by Platform from 2019 to 2025", left + width / 2, top - 30); // adjust top offset if needed
+            p.fill(255);
+            p.textSize(20); 
+            p.textAlign(p.CENTER, p.TOP); 
+            p.text("US Social Network Users by Platform from 2019 to 2025", left + width / 2, top - 30); 
             p.pop();
 
             var minVal = 0;
