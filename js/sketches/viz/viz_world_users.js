@@ -111,7 +111,7 @@
             });
           
             // Highlight selected p5 button
-            btn.style("background", "#69C9D0"); // p5.Element API
+            btn.style("background", "grey"); // p5.Element API
             btn.style("color", "black");
           });
         });
