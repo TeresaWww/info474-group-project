@@ -134,6 +134,11 @@ img.tiktok-img {
   margin-top: 350px;
 }
 
+.long-text {
+  width:max-content;
+  font-size: 18px;
+}
+
 
 .step {
   margin-bottom: 200px;
