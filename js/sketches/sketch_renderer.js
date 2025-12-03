@@ -32,57 +32,56 @@
         draw: function (p, manager, ai, progress) {
             try { console.log('Renderer: delegating draw, ai=', ai); } catch (e) { }
 
-
-            if (ai === 1) {
+            if (ai === 2) {
                 window.VizTikTokMap.yearDropdown?.hide();
                 window.VizTikTokMap.yearLabel?.hide();
                 window.VizSocialNetworks.draw(p, manager, ai, progress);
                 return;
             }
 
-            if (ai === 2) {
+            if (ai === 3) {
                 window.VizTikTokMap.draw(p, manager, ai, progress);
                 window.VizTikTokMap.yearDropdown?.show();
                 window.VizTikTokMap.yearLabel?.show();
                 return;
             }
 
-            if (ai === 3) {
+            if (ai === 4) {
                 window.VizTikTokMap.yearDropdown?.hide();
                 window.VizTikTokMap.yearLabel?.hide();
                 window.TikTokAge.draw(p, manager, ai, progress);
                 return;
             }
 
-            if (ai === 4) {
+            if (ai === 5) {
                 p.clear();
                 return;
             }
 
-            if (ai === 6) {
+            if (ai === 7) {
                 window.VizTimeline.draw(p, manager, ai, progress);
                 return;
             }
-            if (ai === 7) {
+            if (ai === 8) {
                 window.VizBan.draw(p, manager, ai, progress);
                 return;
             }
 
-            if (ai === 8) {
+            if (ai === 9) {
                 p.clear();
                 return;
             }
-            if (ai === 9) {
+            if (ai === 10) {
                 window.VizRednoteDownloads.draw(p, manager, ai, progress);
                 return;
             }
 
-            if (ai === 10) { 
+            if (ai === 11) { 
                 window.Vizplatform_compare.draw(p, manager, ai, progress);
                 return;
             }
 
-            if (ai === 11) { 
+            if (ai === 12) { 
                 p.clear();
                 return;
             }

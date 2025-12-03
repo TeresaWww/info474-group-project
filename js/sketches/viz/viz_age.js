@@ -160,7 +160,7 @@
         p.fill(255);
         p.textAlign(p.CENTER, p.TOP);
         p.textSize(14);
-        p.text("Proportion of Users", w / 2, h + 40);
+        p.text("Proportion of U.S-based Users", w / 2, h + 40);
 
         p.pop();
       },
