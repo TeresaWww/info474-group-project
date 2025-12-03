@@ -25,25 +25,25 @@
         p.background(0); // black background
 
         p.fill(255);
-        p.textAlign(p.CENTER, p.TOP);
+        p.textAlign(p.CENTER, p.TOP + 100);
         p.textSize(28);
         p.text("TikTok Users by Age in United States", p.width / 2, 35);
 
         // ----- layout -----
         const margin = {
-          top: 90,
+          top: 80,
           right: 80,
-          bottom: 90,
-          left: 110,
+          bottom: 100,
+          left: 100,
         };
         const w = p.width - margin.left - margin.right;
-        const h = p.height - margin.top - margin.bottom;
+        const h = p.height - margin.top - margin.bottom - 50; // extra space for bottom label
 
         p.translate(margin.left, margin.top);
 
         const n = data.length;
-        const barGap = 12;
-        const barAreaHeight = h;
+        const barGap = 20;
+        const barAreaHeight = h-40;
         const barHeight = (barAreaHeight - barGap * (n - 1)) / n;
 
         // x-axis scale
