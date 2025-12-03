@@ -4,7 +4,7 @@
     dataLoaded: false,
     dropdownCreated: false,
 
-    // Formats numbers using K/M/B for readability
+    
     formatUsers: function(n) {
       if (n >= 1_000_000_000) return (n / 1_000_000_000).toFixed(1) + "B";
       if (n >= 1_000_000)     return (n / 1_000_000).toFixed(1) + "M";

@@ -31,6 +31,7 @@ window.lineAnimation = {
             p.push();
             p.background(0);
 
+
             // change dataset from long format to wide format 
             var dataMap = {};
             if (!window.datasetSix || window.datasetSix.getRowCount() === 0) {
@@ -76,9 +77,17 @@ window.lineAnimation = {
             }));
 
             var left = manager.offsetX || 50;
-            var top = manager.offsetY || 20;
+            var top = manager.offsetY || 30;
             var width = (manager.width || 600) - 80;
             var height = (manager.height || 350) - 40;
+
+            // Draw graph title
+            p.push();
+            p.fill(255); // white text
+            p.textSize(20); // larger font for title
+            p.textAlign(p.CENTER, p.TOP); // center horizontally, top-aligned vertically
+            p.text("US Social Network Users by Platform from 2019-2025", left + width / 2, top - 30); // adjust top offset if needed
+            p.pop();
 
             var minVal = 0;
             var maxVal = 180;
