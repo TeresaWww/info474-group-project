@@ -298,6 +298,12 @@
       const lx = w + 20;
       let ly = 10;
 
+      p.fill(255);
+      p.textSize(13);
+      p.textAlign(p.LEFT, p.CENTER);
+      p.text("Ads spent on:", lx, ly);
+      ly += 20; // add spacing before items
+
       function legendLine(color, label) {
         p.fill(color);
         p.noStroke();
