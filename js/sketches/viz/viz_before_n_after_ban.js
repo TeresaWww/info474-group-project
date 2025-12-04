@@ -132,6 +132,20 @@
       p.line(0, 0, 0, h); 
       p.line(0, h, w, h);
 
+      // ---------------- Y-AXIS TITLE ----------------
+      p.push();
+      p.fill(255);
+      p.textSize(14);
+      p.textAlign(p.CENTER, p.CENTER);
+
+      // Rotate text for vertical axis
+      p.translate(-50, h / 2);
+      p.rotate(-p.HALF_PI);
+      p.text("% Change Relative to Baseline (Jan 18)", 0, 0);
+
+      p.pop();
+
+
       // ---------------- Y TICKS ----------------
       p.textSize(10);
       p.textAlign(p.RIGHT, p.CENTER);
