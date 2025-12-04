@@ -290,7 +290,7 @@
             // p.circle(c.x, c.y, c.r * 1.8);  // make it bigger
           
             p.fill(255, 215, 0, 130);
-            p.circle(c.x, c.y, c.r * 1.2);
+            p.circle(c.x, c.y, c.r * 1.4);
           }
           
   

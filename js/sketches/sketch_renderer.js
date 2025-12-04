@@ -83,17 +83,23 @@
                 p.clear();
                 return;
             }
+            
             if (ai === 12) {
                 window.VizRednoteDownloads.draw(p, manager, ai, progress);
                 return;
             }
 
-            if (ai === 13) { 
-                window.Vizplatform_compare.draw(p, manager, ai, progress);
+            if (ai === 13) {
+                window.VizRednoteDownloads.draw(p, manager, ai, progress);
                 return;
             }
 
             if (ai === 14) { 
+                window.Vizplatform_compare.draw(p, manager, ai, progress);
+                return;
+            }
+
+            if (ai === 15) { 
                 p.clear();
                 return;
             }
