@@ -63,7 +63,7 @@
                 return;
             }
 
-            if (ai === 6 || ai === 9) {
+            if (ai === 6) {
                 p.clear();
                 return;
             }
@@ -71,15 +71,25 @@
             if (ai === 7 || ai === 8) {
                 window.VizTimeline.draw(p, manager, ai, progress);
                 return;
+            }
 
+            if (ai === 9) {
+                p.clear();
+                window.VizBan.filterLabel?.hide();
+                window.VizBan.filterBtns?.hide();
+                return;
             }
 
             if (ai === 10) {
                 window.VizBan.draw(p, manager, ai, progress);
+                window.VizBan.filterLabel?.show();
+                window.VizBan.filterBtns?.show();
                 return;
             }
 
             if (ai === 11) {
+                window.VizBan.filterLabel?.hide();
+                window.VizBan.filterBtns?.hide();
                 p.clear();
                 return;
             }

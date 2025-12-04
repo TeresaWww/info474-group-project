@@ -1,21 +1,33 @@
 (function () {
+  window.banBusinessFilter = "small"; // default filter
+
   window.VizBan = {
     dataLoaded: false,
     table: null,
+    filterButtonsCreated: false,
 
     draw: function (p, manager, ai, progress) {
       p.push();
 
-      const canvasWidth = manager.canvasWidth || p.width;
-      const canvasHeight = manager.canvasHeight || p.height;
+      const W = manager.canvasWidth;
+      const H = manager.canvasHeight;
 
-      // CLEAR FRAME FIRST so nothing lingers
       p.background(0);
 
-      // ---------- LOAD DATA ----------
+      if (this.filterButtonsCreated) {
+        if (ai === 10) {
+          this.filterLabel.show();
+          this.filterBtns.show();
+        } else {
+          this.filterLabel.hide();
+          this.filterBtns.hide();
+        }
+      }
+
+      // ---------------- LOAD CSV ----------------
       if (!this.dataLoaded) {
         p.loadTable(
-          "data/tiktok_meta_spend_percent_change.csv",
+          "data/Tiktok_vs_Meta_ban.csv",
           "csv",
           "header",
           (table) => {
@@ -28,230 +40,265 @@
         p.fill(255);
         p.textAlign(p.CENTER, p.CENTER);
         p.textSize(18);
-        p.text(
-          "Loading advertiser spend data...",
-          canvasWidth / 2,
-          canvasHeight / 2
-        );
+        p.text("Loading advertiser spend data...", W / 2, H / 2);
         p.pop();
         return;
       }
 
-      // ---------- EXTRACT DATA ----------
+      // ---------------- CREATE FILTER BUTTONS ----------------
+      if (!this.filterButtonsCreated) {
+        const container = document.getElementById("vis");
+
+        this.filterLabel = p.createDiv("Business Type:");
+        this.filterLabel.parent(container);
+        this.filterLabel.style("color", "white");
+        this.filterLabel.style("font-size", "14px");
+        this.filterLabel.position(20, 1);
+
+        this.filterBtns = p.createDiv();
+        this.filterBtns.parent(container);
+        this.filterBtns.position(80, 30);
+
+        const options = [
+          { name: "Small", value: "small" },
+          { name: "Large", value: "large" }
+        ];
+
+        options.forEach(opt => {
+          const b = p.createButton(opt.name);
+          b.parent(this.filterBtns);
+          b.style("margin-right", "8px");
+          b.style("padding", "4px 10px");
+          b.style("background", "#111");
+          b.style("color", "white");
+          b.style("border", "1px solid #444");
+          b.style("border-radius", "4px");
+          b.style("cursor", "pointer");
+
+          b.mousePressed(() => {
+            window.banBusinessFilter = opt.value;
+
+            [...this.filterBtns.elt.children].forEach(btn => {
+              btn.style.background = "#111";
+              btn.style.color = "white";
+            });
+
+            b.style("background", "#69C9D0");
+            b.style("color", "black");
+          });
+        });
+
+        this.filterButtonsCreated = true;
+      }
+
+      // ---------------- EXTRACT DATA ----------------
       const rowCount = this.table.getRowCount();
       const dates = [];
-      const tiktokVals = [];
-      const metaVals = [];
+
+      const tikTokSmall = [];
+      const tikTokLarge = [];
+      const metaSmall = [];
+      const metaLarge = [];
 
       for (let r = 0; r < rowCount; r++) {
-        dates.push(this.table.getString(r, "Date"));
-        tiktokVals.push(this.table.getNum(r, "TikTok_spend_%"));
-        metaVals.push(this.table.getNum(r, "Meta_spend_%"));
+        const dateStr = this.table.getString(r, "Date").trim();
+        dates.push(dateStr);
+
+        tikTokSmall.push(this.table.getNum(r, "TikTok_small") * 100);
+        tikTokLarge.push(this.table.getNum(r, "TikTok_large") * 100);
+        metaSmall.push(this.table.getNum(r, "Meta_small") * 100);
+        metaLarge.push(this.table.getNum(r, "Meta_large") * 100);
       }
 
-      // ---------- LAYOUT ----------
-      const margin = { top: 100, right: 120, bottom: 90, left: 70 };
-      const w = canvasWidth - margin.left - margin.right;
-      const h = canvasHeight - margin.top - margin.bottom;
+      // DEBUG PRINT — shows your real CSV values
+      // console.log("DATES:", dates);
 
-      p.translate(margin.left, margin.top);
+      // ---------------- LAYOUT ----------------
+      const M = { top: 70, right: 130, bottom: 80, left: 70 };
+      const w = W - M.left - M.right;
+      const h = H - M.top - M.bottom;
 
-      // ---------- SCALES ----------
-      let minY = Infinity;
-      let maxY = -Infinity;
-      for (let i = 0; i < rowCount; i++) {
-        const v1 = tiktokVals[i];
-        const v2 = metaVals[i];
-        if (v1 < minY) minY = v1;
-        if (v1 > maxY) maxY = v1;
-        if (v2 < minY) minY = v2;
-        if (v2 > maxY) maxY = v2;
-      }
-      const padding = 5;
-      minY -= padding;
-      maxY += padding;
+      p.translate(M.left, M.top);
 
-      const xStep = rowCount > 1 ? w / (rowCount - 1) : w;
+      // ---------------- SCALE ----------------
+      let minY = -100;
+      let maxY =  100;
+
+      const xStep = w / (rowCount - 1);
       const yScale = (v) => p.map(v, minY, maxY, h, 0);
 
-      // ---------- GRID + AXES ----------
+      // ---------------- AXES ----------------
       p.stroke(255);
-      p.strokeWeight(1);
-      p.line(0, 0, 0, h); // y-axis
-      p.line(0, h, w, h); // x-axis
+      p.line(0, 0, 0, h); 
+      p.line(0, h, w, h);
 
-      // y ticks
-      p.textAlign(p.RIGHT, p.CENTER);
+      // ---------------- Y TICKS ----------------
       p.textSize(10);
-      const yTicks = 5;
-      for (let i = 0; i <= yTicks; i++) {
-        const t = p.lerp(minY, maxY, i / yTicks);
+      p.textAlign(p.RIGHT, p.CENTER);
+
+      for (let t = -100; t <= 100; t += 20) {
         const y = yScale(t);
         p.stroke(80);
         p.line(0, y, w, y);
-        p.stroke(255);
-        p.line(-5, y, 0, y);
         p.noStroke();
         p.fill(255);
-        p.text(t.toFixed(1) + "%", -8, y);
+        p.text(`${t}%`, -5, y);
       }
 
-      // x ticks
+      // ---------------- X TICKS ----------------
       p.textAlign(p.CENTER, p.TOP);
       p.textSize(10);
+
       for (let i = 0; i < rowCount; i++) {
         const x = i * xStep;
         p.stroke(255);
         p.line(x, h, x, h + 5);
+
         p.noStroke();
         p.fill(255);
         p.text(dates[i], x, h + 8);
       }
 
-      // zero line
+      // ---------------- ZERO LINE ----------------
       const zeroY = yScale(0);
       p.stroke(160);
-      p.strokeWeight(1);
       p.drawingContext.setLineDash([4, 4]);
       p.line(0, zeroY, w, zeroY);
       p.drawingContext.setLineDash([]);
 
-      // ---------- LINES ----------
-      // TikTok (pink)
-      p.noFill();
-      p.strokeWeight(3);
-      p.stroke(238, 29, 82);
-      p.beginShape();
-      for (let i = 0; i < rowCount; i++) {
-        const x = i * xStep;
-        const y = yScale(tiktokVals[i]);
-        p.vertex(x, y);
+      // ---------------- DRAW SERIES ----------------
+      function drawSeries(arr, color) {
+        p.noFill();
+        p.stroke(color);
+        p.strokeWeight(3);
+        p.beginShape();
+        for (let i = 0; i < arr.length; i++) {
+          p.vertex(i * xStep, yScale(arr[i]));
+        }
+        p.endShape();
       }
-      p.endShape();
 
-      // Meta (Facebook blue)
-      p.stroke(24, 119, 242); // Facebook blue
-      p.beginShape();
-      for (let i = 0; i < rowCount; i++) {
-        const x = i * xStep;
-        const y = yScale(metaVals[i]);
-        p.vertex(x, y);
+      const f = window.banBusinessFilter;
+
+      if (f === "small") {
+        drawSeries(tikTokSmall, p.color(238, 29, 82));
+        drawSeries(metaSmall, p.color(24, 119, 242));
+      } else {
+        drawSeries(tikTokLarge, p.color(238, 29, 82));
+        drawSeries(metaLarge, p.color(24, 119, 242));
       }
-      p.endShape();
 
-      // ---------- EVENT LINES ----------
-      const findIndexByDate = (label) => dates.findIndex((d) => d === label);
-      const outageIdx = findIndexByDate("Jan 19");
-      const restoreIdx = findIndexByDate("Jan 20");
+      // ---------------- SHADED REGION ----------------
+      function shadeBetween(dateA, dateB, color) {
+        const idxA = dates.findIndex(d => d.trim() === dateA);
+        const idxB = dates.findIndex(d => d.trim() === dateB);
 
-      // TikTok outage – orange
-      if (outageIdx !== -1) {
-        const x = outageIdx * xStep;
+        if (idxA === -1 || idxB === -1) {
+          console.log("Shade NOT drawn (bad date):", dateA, dateB, dates);
+          return;
+        }
+
+        const xA = idxA * xStep;
+        const xB = idxB * xStep;
+
         p.push();
-        p.stroke(255, 165, 0); // orange
+        p.noStroke();
+        p.fill(color);
+        p.rect(xA, 0, xB - xA, h);
+        p.pop();
+      }
+
+      // SHADING (use exact CSV labels)
+      shadeBetween("Jan-19", "Jan-20", p.color(255, 60, 60, 60));
+
+      // ---------------- EVENT MARKERS ----------------
+      function markEvent(dateLabel, color, textLabel, align = "right") {
+        const idx = dates.findIndex(d => d.trim() === dateLabel);
+        if (idx === -1) return;
+
+        const x = idx * xStep;
+
+        p.push();
+        p.stroke(color);
         p.strokeWeight(2);
         p.drawingContext.setLineDash([5, 5]);
         p.line(x, 0, x, h);
         p.drawingContext.setLineDash([]);
         p.noStroke();
-        p.fill(255, 165, 0);
+
+        p.fill(color);
         p.textSize(12);
-        p.textAlign(p.RIGHT, p.BOTTOM);
-        p.text("TikTok outage", x + 16, -10);
+        p.textAlign(align === "right" ? p.RIGHT : p.LEFT, p.BOTTOM);
+        p.text(textLabel, x + (align === "right" ? 15 : -15), -10);
         p.pop();
       }
 
-      // Service restoration – light gray
-      if (restoreIdx !== -1) {
-        const x = restoreIdx * xStep;
-        p.push();
-        p.stroke(200); // light gray
-        p.strokeWeight(2);
-        p.drawingContext.setLineDash([5, 5]);
-        p.line(x, 0, x, h);
-        p.drawingContext.setLineDash([]);
+      markEvent("Jan-19", p.color(255, 165, 0), "TikTok outage", "right");
+      markEvent("Jan-20", p.color(200), "Restored", "left");
+
+      // ---------------- HOVER ----------------
+      let hoverIndex = Math.round((p.mouseX - M.left) / xStep);
+      hoverIndex = p.constrain(hoverIndex, 0, rowCount - 1);
+
+      const hx = hoverIndex * xStep;
+
+      p.stroke(180);
+      p.drawingContext.setLineDash([3, 3]);
+      p.line(hx, 0, hx, h);
+      p.drawingContext.setLineDash([]);
+
+      function hoverCircle(arr, color) {
+        p.fill(color);
         p.noStroke();
-        p.fill(200);
-        p.textSize(12);
-        p.textAlign(p.LEFT, p.BOTTOM);
-        p.text("Service restoration", x - 16, -24);
-        p.pop();
+        p.circle(hx, yScale(arr[hoverIndex]), 7);
       }
 
-      // ---------- HOVER ----------
-      const localX = p.mouseX - margin.left;
-      const localY = p.mouseY - margin.top;
-      let hoverIndex = -1;
-
-      if (localX >= 0 && localX <= w && localY >= 0 && localY <= h) {
-        hoverIndex = Math.round(localX / xStep);
-        hoverIndex = p.constrain(hoverIndex, 0, rowCount - 1);
+      if (f === "small") {
+        hoverCircle(tikTokSmall, p.color(238, 29, 82));
+        hoverCircle(metaSmall, p.color(24, 119, 242));
+      } else {
+        hoverCircle(tikTokLarge, p.color(238, 29, 82));
+        hoverCircle(metaLarge, p.color(24, 119, 242));
       }
 
-      if (hoverIndex !== -1) {
-        const x = hoverIndex * xStep;
-        const yTik = yScale(tiktokVals[hoverIndex]);
-        const yMeta = yScale(metaVals[hoverIndex]);
+      // ---------------- TOOLTIP ----------------
+      p.fill(255);
+      p.textSize(12);
+      p.textAlign(p.LEFT, p.TOP);
 
-        // vertical guide
-        p.stroke(180);
-        p.strokeWeight(1);
-        p.drawingContext.setLineDash([3, 3]);
-        p.line(x, 0, x, h);
-        p.drawingContext.setLineDash([]);
+      const lines = [dates[hoverIndex]];
 
-        // points
+      if (f === "small") {
+        lines.push(`TikTok small: ${tikTokSmall[hoverIndex].toFixed(1)}%`);
+        lines.push(`Meta small: ${metaSmall[hoverIndex].toFixed(1)}%`);
+      } else {
+        lines.push(`TikTok large: ${tikTokLarge[hoverIndex].toFixed(1)}%`);
+        lines.push(`Meta large: ${metaLarge[hoverIndex].toFixed(1)}%`);
+      }
+
+      for (let i = 0; i < lines.length; i++) {
+        p.text(lines[i], hx + 12, 10 + i * 16);
+      }
+
+      // ---- LEGEND ----
+      const lx = w + 20;
+      let ly = 10;
+
+      function legendLine(color, label) {
+        p.fill(color);
         p.noStroke();
-        p.fill(238, 29, 82);
-        p.circle(x, yTik, 7);
-        p.fill(24, 119, 242);
-        p.circle(x, yMeta, 7);
-
-        // tooltip
-        const tooltipX = x + 10;
-        const tooltipY = 20;
-        p.textAlign(p.LEFT, p.TOP);
+        p.rect(lx, ly, 18, 3);
         p.fill(255);
         p.textSize(12);
-        const lines = [
-          dates[hoverIndex],
-          `TikTok: ${tiktokVals[hoverIndex].toFixed(1)}%`,
-          `Meta: ${metaVals[hoverIndex].toFixed(1)}%`,
-        ];
-        for (let i = 0; i < lines.length; i++) {
-          p.text(lines[i], tooltipX, tooltipY + i * 14);
-        }
+        p.textAlign(p.LEFT, p.CENTER);
+        p.text(label, lx + 25, ly + 1);
+        ly += 20;
       }
 
-      // ---------- AXIS TITLES ----------
-      p.fill(255);
-      p.noStroke();
-      p.textAlign(p.CENTER, p.BOTTOM);
-      p.text("Date (Jan 12–26, 2025)", w / 2, h + 40);
-
-      p.push();
-      p.translate(-50, h / 2);
-      p.rotate(-p.HALF_PI);
-      p.text("Percent change in daily ad spend (vs Jan 18 baseline)", 0, 0);
-      p.pop();
-
-      // LEGEND
-      const legendX = w + 20;
-      const legendY = 10;
-      p.textAlign(p.LEFT, p.TOP);
-      p.textSize(12);
-
-      p.fill(238, 29, 82);
-      p.rect(legendX, legendY, 16, 3);
-      p.fill(255);
-      p.text("TikTok ad spend", legendX + 22, legendY - 4);
-
-      p.fill(24, 119, 242);
-      p.rect(legendX, legendY + 18, 16, 3);
-      p.fill(255);
-      p.text("Meta ad spend", legendX + 22, legendY + 14);
+      legendLine(p.color(238, 29, 82), "TikTok");
+      legendLine(p.color(24, 119, 242), "Meta");
 
       p.pop();
-    },
+    }
   };
 })();
