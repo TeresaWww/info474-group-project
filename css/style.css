@@ -134,8 +134,8 @@ img.tiktok-img {
   margin-top: 350px;
 }
 
-#sections .title .long-text {
-  width:max-content;
+#sections .section-title .long-text {
+  width:1000px;
   font-size: 18px;
 }
 

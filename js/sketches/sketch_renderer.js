@@ -63,42 +63,37 @@
                 return;
             }
 
-            if (ai === 6) {
+            if (ai === 6 || ai === 9) {
                 p.clear();
                 return;
             }
 
-            if (ai === 7) {
+            if (ai === 7 || ai === 8) {
                 window.VizTimeline.draw(p, manager, ai, progress);
                 return;
 
             }
 
-            if (ai === 8) {
-                p.clear();
-                return;
-            }
-
-            if (ai === 9) {
+            if (ai === 10) {
                 window.VizBan.draw(p, manager, ai, progress);
                 return;
             }
 
-            if (ai === 10) {
+            if (ai === 11) {
                 p.clear();
                 return;
             }
-            if (ai === 11) {
+            if (ai === 12) {
                 window.VizRednoteDownloads.draw(p, manager, ai, progress);
                 return;
             }
 
-            if (ai === 12) { 
+            if (ai === 13) { 
                 window.Vizplatform_compare.draw(p, manager, ai, progress);
                 return;
             }
 
-            if (ai === 13) { 
+            if (ai === 14) { 
                 p.clear();
                 return;
             }
