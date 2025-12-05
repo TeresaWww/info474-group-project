@@ -178,11 +178,34 @@
         let row = t.findRow(c.name, 'country') || t.findRow(c.id, 'flagCode');
         let users = row ? parseFloat(row.get(`TikTokUsers_${window.VizTikTokMap.year}`)?.trim()) : NaN;
 
-        let col = p.color(200, 200, 200); // light gray if no data
-        if (!isNaN(users)) {
-          const amt = (users - this.globalMin) / (this.globalMax - this.globalMin);
-          col = p.lerpColor(p.color("#69C9D0"), p.color("#001A4D"), amt);
-        }        
+       // let col = p.color(200, 200, 200); // light gray if no data
+        //if (!isNaN(users)) {
+          //const amt = (users - this.globalMin) / (this.globalMax - this.globalMin);
+          //col = p.lerpColor(p.color("#69C9D0"), p.color("#001A4D"), amt);
+        //}
+        
+        const NO_DATA_COLOR = p.color(60); // dark gray
+        const MIN_CLAMP = 100000; // 100K minimum for color scaling
+
+        let col = NO_DATA_COLOR;
+
+        if (!isNaN(users) && users > 0) {
+          const safeUsers = Math.max(users, MIN_CLAMP);
+
+          const logMin = Math.log10(MIN_CLAMP);
+          const logMax = Math.log10(this.globalMax);
+          const logVal = Math.log10(safeUsers);
+
+          const amt = (logVal - logMin) / (logMax - logMin);
+
+          // ✅ FLIPPED GRADIENT: dark → bright
+          col = p.lerpColor(
+            p.color("#001A4D"),  // dark blue = low users
+            p.color("#69C9D0"),  // bright aqua = high users
+            amt
+          );
+        }
+
 
         p.fill(col);
         p.stroke(150);
@@ -267,19 +290,32 @@
       const legendWidth = 20;
       p.noStroke();
       for (let i = 0; i <= 1; i += 0.01) {
-        const col = p.lerpColor(p.color("#69C9D0"), p.color("#001A4D"), 1 - i);
+        //const col = p.lerpColor(p.color("#69C9D0"), p.color("#001A4D"), 1 - i);
+         const col = p.lerpColor(p.color("#001A4D"),  p.color("#69C9D0"), i);
         p.fill(col);
-        p.rect(legendX, legendY + i * legendHeight, legendWidth, legendHeight * 0.01);
+        p.rect(legendX, legendY + (1 - i) * legendHeight, legendWidth, legendHeight * 0.01);
       }
       p.noStroke();
       p.fill(255);
       p.textSize(12);
       p.textAlign(p.LEFT, p.CENTER);
+      //p.text(this.formatUsers(this.globalMax), legendX + legendWidth + 5, legendY);
+      //p.text(this.formatUsers(this.globalMin), legendX + legendWidth + 5, legendY + legendHeight);
       p.text(this.formatUsers(this.globalMax), legendX + legendWidth + 5, legendY);
-      p.text(this.formatUsers(this.globalMin), legendX + legendWidth + 5, legendY + legendHeight);
-      
+      p.text("< 100K", legendX + legendWidth + 5, legendY + legendHeight);
+
+
       p.textAlign(p.CENTER, p.CENTER);
       p.text("TikTok Users", legendX + legendWidth / 2, legendY - 15);
+
+      // No Data Legend
+      p.fill(60);
+      p.rect(legendX, legendY + legendHeight + 20, 12, 12);
+
+      p.fill(255);
+      p.textAlign(p.LEFT, p.CENTER);
+      p.text("No Data", legendX + 18, legendY + legendHeight + 26);
+
 
       
       function pointInPoly(verts, pt, scale = 1, offsetX = 0, offsetY = 0) {
