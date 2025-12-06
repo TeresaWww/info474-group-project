@@ -172,7 +172,7 @@
       let maxUsers = Math.max(...values);
 
 
-      
+      let usCentroid = null;
       let hoverCountry = null;
       window.country.forEach(c => {
         let row = t.findRow(c.name, 'country') || t.findRow(c.id, 'flagCode');
@@ -206,6 +206,7 @@
           );
         }
 
+        const isUS = (c.name === "United States" || c.id === "US");
 
         p.fill(col);
         p.stroke(150);
@@ -219,6 +220,25 @@
 
             if (!hoverCountry && pointInPoly(poly, mousePt, scale, offsetX, offsetY)) {
               hoverCountry = { name: c.name, users };
+            }
+
+            if (isUS) {
+              let sx = 0, sy = 0, n = 0;
+              poly.forEach(v => {
+                sx += v[0] * scale + offsetX;
+                sy += v[1] * scale + offsetY;
+                n++;
+              });
+              if (n > 0) {
+                const cx = sx / n;
+                const cy = sy / n;
+                if (!usCentroid) {
+                  usCentroid = { x: cx, y: cy };
+                } else {
+                  usCentroid.x = (usCentroid.x + cx) / 2;
+                  usCentroid.y = (usCentroid.y + cy) / 2;
+                }
+              }
             }
           });
         }
@@ -283,7 +303,21 @@
       }
 
 
-      
+      if (usCentroid) {
+        const labelX = usCentroid.x - 120;  
+        const labelY = usCentroid.y + 20;  
+
+        p.fill(255);
+        p.textAlign(p.LEFT, p.TOP);
+        p.textSize(13);
+        p.text(
+          "United States:\nOne of the countries\nwith the highest\nTikTok users",
+          labelX,
+          labelY
+        );
+      }
+
+
       const legendX = canvasWidth - 110;
       const legendY = 50;
       const legendHeight = 150;
