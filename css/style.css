@@ -165,7 +165,7 @@ img.tiktok-img {
 #vis {
   display: inline-block;
   position: fixed;
-  top: 160px;
+  top: 120px;
   z-index: 100;
   margin-left: 80px;
   /* position: relative; */
