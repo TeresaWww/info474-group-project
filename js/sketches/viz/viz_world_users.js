@@ -200,8 +200,8 @@
 
           // ✅ FLIPPED GRADIENT: dark → bright
           col = p.lerpColor(
-            p.color("#001A4D"),  // dark blue = low users
-            p.color("#69C9D0"),  // bright aqua = high users
+            p.color("#1F4B99"),   // lighter low-end
+            p.color("#7FE6F2"),   // brighter high-end
             amt
           );
         }
@@ -209,7 +209,7 @@
 
         p.fill(col);
         p.stroke(150);
-        p.strokeWeight(0.5);
+        p.strokeWeight(0.6);
 
         if (c.polygons) {
           c.polygons.forEach(poly => {
@@ -301,8 +301,8 @@
       p.textAlign(p.LEFT, p.CENTER);
       //p.text(this.formatUsers(this.globalMax), legendX + legendWidth + 5, legendY);
       //p.text(this.formatUsers(this.globalMin), legendX + legendWidth + 5, legendY + legendHeight);
-      p.text(this.formatUsers(this.globalMax), legendX + legendWidth + 5, legendY);
-      p.text("< 100K", legendX + legendWidth + 5, legendY + legendHeight);
+      p.text("148M", legendX + legendWidth + 5, legendY);
+      p.text("< 1M", legendX + legendWidth + 5, legendY + legendHeight);
 
 
       p.textAlign(p.CENTER, p.CENTER);
