@@ -304,8 +304,8 @@
 
 
       if (usCentroid) {
-        const labelX = usCentroid.x - 120;  
-        const labelY = usCentroid.y + 20;  
+        const labelX = usCentroid.x - 110;  
+        const labelY = usCentroid.y + 10;  
 
         p.fill(255);
         p.textAlign(p.LEFT, p.TOP);
