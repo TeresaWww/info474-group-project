@@ -83,12 +83,12 @@
         // ------ DATE ------
         p.fill(180, alpha);
         p.textAlign(direction === -1 ? p.RIGHT : p.LEFT, p.CENTER);
-        p.textSize(14);
+        p.textSize(19);
         p.text(ev.date, cx + direction * 40, y);
 
         // ------ TEXT ------
         p.fill(230, alpha);
-        p.textSize(15);
+        p.textSize(17);
         p.textAlign(direction === -1 ? p.RIGHT : p.LEFT, p.TOP);
         p.text(ev.text, textX, y + 25); 
       }

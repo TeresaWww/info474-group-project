@@ -60,7 +60,7 @@
         p.strokeWeight(1.2);
         p.line(0, axisY, w, axisY); // x-axis
 
-        p.textSize(12);
+        p.textSize(15);
         p.textAlign(p.CENTER, p.TOP);
 
         for (let i = 0; i <= steps; i++) {
@@ -85,7 +85,7 @@
         p.translate(-75, h / 2);
         p.rotate(-p.HALF_PI);
         p.textAlign(p.CENTER, p.CENTER);
-        p.textSize(14);
+        p.textSize(16);
         p.fill(255);
         p.text("Age Group", 0, 0);
         p.pop();
@@ -159,7 +159,7 @@
         // ----- bottom -----
         p.fill(255);
         p.textAlign(p.CENTER, p.TOP);
-        p.textSize(14);
+        p.textSize(16);
         p.text("Proportion of U.S-based Users", w / 2, h + 40);
 
         p.pop();
