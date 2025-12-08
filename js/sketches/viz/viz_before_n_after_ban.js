@@ -17,7 +17,7 @@ initUI: function (p) {
   this.filterUI.style("position", "absolute");
   this.filterUI.style("top", "60px");              // directly under title
   this.filterUI.style("left", "50%");
-  this.filterUI.style("transform", "translateX(-50%)");
+  this.filterUI.style("transform", "translateX(calc(-50% - 40px))");
   this.filterUI.style("color", "white");
   this.filterUI.style("font-size", "14px");
   this.filterUI.style("display", "flex");
@@ -26,7 +26,8 @@ initUI: function (p) {
   this.filterUI.style("z-index", "10");
 
   // Label
-  this.filterLabel = p.createDiv("Business Type:");
+  this.filterLabel = p.createDiv("Advertiser Size:");
+
   this.filterLabel.parent(this.filterUI);
 
   // Buttons wrapper (inline)
@@ -35,34 +36,39 @@ initUI: function (p) {
   this.filterBtns.style("display", "flex");
   this.filterBtns.style("gap", "8px");
 
+  const labelMap = {
+    small: "Small Business",
+    large: "Large Business"
+  };
+  
   ["small", "large"].forEach((value) => {
-    const name = value.charAt(0).toUpperCase() + value.slice(1);
-    const b = p.createButton(name);
-    b.parent(this.filterBtns);
+    const b = p.createButton(labelMap[value]);
+  b.parent(this.filterBtns);
 
-    b.style("padding", "4px 10px");
-    b.style("background", "#111");
-    b.style("color", "white");
-    b.style("border", "1px solid #444");
-    b.style("border-radius", "4px");
-    b.style("cursor", "pointer");
 
-    // default highlight
-    if (value === window.banBusinessFilter) {
-      b.style("background", "#69C9D0");
-      b.style("color", "black");
-    }
+  b.style("padding", "4px 10px");
+  b.style("background", "#111");
+  b.style("color", "white");
+  b.style("border", "1px solid #444");
+  b.style("border-radius", "4px");
+  b.style("cursor", "pointer");
 
-    b.mousePressed(() => {
-      window.banBusinessFilter = value;
-      [...this.filterBtns.elt.children].forEach(btn => {
-        btn.style.background = "#111";
-        btn.style.color = "white";
-      });
-      b.style("background", "#69C9D0");
-      b.style("color", "black");
+  // default highlight
+  if (value === window.banBusinessFilter) {
+    b.style("background", "#69C9D0");
+    b.style("color", "black");
+  }
+
+  b.mousePressed(() => {
+    window.banBusinessFilter = value;
+    [...this.filterBtns.elt.children].forEach(btn => {
+      btn.style.background = "#111";
+      btn.style.color = "white";
     });
+    b.style("background", "#69C9D0");
+    b.style("color", "black");
   });
+});
 
   this.filterButtonsCreated = true;
 },
@@ -165,7 +171,7 @@ initUI: function (p) {
       p.translate(-45, h / 2);
       p.rotate(-p.HALF_PI);
       p.textAlign(p.CENTER, p.CENTER);
-      p.textSize(12);
+      p.textSize(16);
       p.fill(230);
       p.text("% Change Relative to Baseline (Jan 18)", 0, 0);
       p.pop();
