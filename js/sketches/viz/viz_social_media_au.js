@@ -86,7 +86,7 @@
         p.textSize(15);
         p.fill(150);
         p.text(
-          "Hover to see what year each platform was launched",
+          "Years indicates when the platforms were launched",
           margin.right + 150,
           margin.top - 20
         );
@@ -129,6 +129,19 @@
   
           p.noStroke();
           p.rect(0, y, w, barH, 6);
+          // --- Launch year printed ON the bar ---
+          p.fill(255);
+          p.textSize(14);
+          p.textAlign(p.CENTER, p.CENTER);
+
+          // Only print if bar is wide enough to fit text
+          if (w > 50) {
+              p.text(d.year, w / 2, y + barH / 2);
+          } else {
+              // if bar is short, print the year at the end
+              p.text(d.year, w + 15, y + barH / 2);
+          }
+
   
           // Name label (WHITE)
           p.fill(255);
@@ -164,24 +177,6 @@
           p.textAlign(p.CENTER, p.TOP);
           p.text(t, x, H - margin.bottom + 10);
         });
-  
-        if (this.hoverIndex !== -1) {
-          let d = dataset[this.hoverIndex];
-  
-          p.noStroke();
-          p.fill(30);
-          p.rect(mouse.x + 12, mouse.y - 23, 180, 55, 6);
-  
-          p.fill(255);
-          p.textSize(16);
-          p.textAlign(p.LEFT, p.CENTER);
-          p.text(`${d.name}`, mouse.x + 20, mouse.y - 5);
-          p.text(`Launched in ${d.year}`, mouse.x + 20, mouse.y + 15);          
-  
-          p.cursor(p.HAND);
-        } else {
-          p.cursor(p.ARROW);
-        }
   
         p.pop();
       }
