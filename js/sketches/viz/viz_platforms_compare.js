@@ -95,9 +95,11 @@ window.lineAnimation = {
             var steps = (maxVal - minVal) / stepVal;
 
             // axes and grid
-            p.stroke(200);
-            p.line(left, top, left, top + height);
-            p.line(left, top + height, left + width, top + height);
+            p.stroke(150, 150, 150, 120);  // darker + transparent
+            p.strokeWeight(1.2);           // thinner axis line
+            p.line(left, top, left, top + height);          // Y-axis
+            p.line(left, top + height, left + width, top + height);  // X-axis
+
 
             p.stroke(200);
             p.fill(255);
@@ -107,7 +109,8 @@ window.lineAnimation = {
             for (var i = 0; i <= steps; i++) {
                 var yVal = minVal + i * stepVal;
                 var y = top + height - ((yVal - minVal) / (maxVal - minVal)) * height;
-                p.stroke(220);
+                p.stroke(100, 100, 100, 80);  // darker + transparent
+                p.strokeWeight(1);           // thinner grid line
                 p.line(left, y, left + width, y);
                 p.fill(255);
                 p.noStroke();
@@ -147,7 +150,16 @@ window.lineAnimation = {
             }
 
             platforms.forEach(function (pf) {
-                p.stroke(mouseOverChart && pf.key !== "TikTok" ? "#ccc" : pf.color);
+                // a subtle dim color instead of hard gray
+                let dim = p.color( pf.color );
+                dim.setAlpha(70);   // keep hue, lower visibility
+
+                p.stroke(
+                mouseOverChart && pf.key !== "TikTok" 
+                ? dim 
+                : pf.color
+                );
+
                 p.strokeWeight(p.key === "TikTok" ? 6 : 3);
                 p.noFill();
 
@@ -188,9 +200,14 @@ window.lineAnimation = {
                     if (val2 !== null && val2 !== undefined) {
                         var x2 = left + (j2 / (chartData.length - 1)) * width;
                         var y2 = top + height - ((val2 - minVal) / (maxVal - minVal)) * height;
-                        p.fill(mouseOverChart && pf.key !== "TikTok" ? "#ccc" : pf.color);
+                        // soft fade color, not gray
+                        let dotFade = p.color(pf.color);
+                        dotFade.setAlpha(70);
+
+                        p.fill(mouseOverChart && pf.key !== "TikTok" ? dotFade : pf.color);
                         p.noStroke();
                         p.circle(x2, y2, 8);
+
 
                         if (pf.key === platforms[0].key) {
                             p.fill(255);
